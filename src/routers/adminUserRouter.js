@@ -1,5 +1,5 @@
 import express from "express";
-import uuidv4 from "uuid/v4";
+
 import { hashPassword } from "../helpers/bcryptHelper.js";
 import { newAdminUserValidation } from "../middlewares/joi-validation/adminUserValidation.js";
 import { insertAdminUser } from "../model/adminUserModel /adminUserModel.js";
