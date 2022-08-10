@@ -22,3 +22,8 @@ Restful API end points: can call one endpoint at a time using the different HTTP
 | 5.  | `/reset-password` | PATCH  | No      | Receives `email, resetCode, newPassword` to reset the admin user's password.                                                                                                   |
 
 - Receives the id of the admin user and delete the admin user from the database.
+
+### Hashings API
+
+- Hashing API is used to hash the password and verify the password.
+- hash means to encrypt the password.
