@@ -6,20 +6,26 @@ app.use(express.json()); //
 import cors from "cors";
 app.use(cors());
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
 
-app.use("/", (req, res) => { // app.use("/" for listening to all requests)
-    res.send("Hello World");
+// Api
+import adminUserRouter from "./src/routers/adminUserRouter.js"
+app.use("/api/v1/admin-user", adminUserRouter);
+
+app.use("/", (req, res) => {
+    res.json({
+        message: "Welcome to the Admin User API"
+    })
 })
 
 app.use((err, req, res, next) => {
     console.log(err);
     // res.status(500).send("Something broke!");
-    const status = err.statusCode || 404;
-    res.status(status).json({
-        status: "error",
-        message: err.message
+    const statusCode = err.status || 500;
+    res.status(statusCode).json({
+        message: "Something went wrong"
     })
+
 })
 
 app.listen(PORT, (err) => { // app.listen(PORT,) for listening to specific port
