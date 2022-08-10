@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 
-const dbConnection = () => {
+export const dbConnection = () => {
     try {
         const conStr = process.env.MONGO_CLIENT;
+        console.log(conStr);
         if (!conStr) {
-            return console.log("No MONGO_CLIENT found in environment variables");
+            return console.log("No connection string found");
         }
         const con = mongoose.connect(conStr);
         con && console.log("Connected to MongoDB");
@@ -12,6 +13,5 @@ const dbConnection = () => {
     } catch (err) {
         console.log(err);
     }
-}
 
-export default dbConnection;
+}

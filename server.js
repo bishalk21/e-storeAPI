@@ -1,4 +1,6 @@
+import "dotenv/config";
 import express from "express";
+
 const app = express();
 
 app.use(express.json()); //
@@ -11,7 +13,7 @@ const PORT = process.env.PORT || 8000;
 
 // Api
 import adminUserRouter from "./src/routers/adminUserRouter.js";
-import dbConnection from "./src/config/dbConfig.js";
+import { dbConnection } from "./src/config/dbConfig.js";
 app.use("/api/v1/admin-user", adminUserRouter);
 
 // Database Connection

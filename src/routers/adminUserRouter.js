@@ -13,11 +13,13 @@ router.post("/", async (req, res, next) => {
     // console.log(req.body);
     // console.time("encryptPassword");
     // const hashedPass = hashPassword(password);
-    req.body.password = await hashPassword(password);
+    // req.body.password = hashPassword(password);
+
     // console.log(hashedPass);
     // console.timeEnd("encryptPassword");
 
     const user = await insertAdminUser(req.body);
+    console.log(user);
     user?._id
       ? res.json({
           status: "success",
