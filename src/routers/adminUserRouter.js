@@ -1,4 +1,5 @@
 import express from "express";
+import uuidv4 from "uuid/v4";
 import { hashPassword } from "../helpers/bcryptHelper.js";
 import { newAdminUserValidation } from "../middlewares/joi-validation/adminUserValidation.js";
 import { insertAdminUser } from "../model/adminUserModel /adminUserModel.js";
@@ -18,19 +19,25 @@ router.post("/", newAdminUserValidation, async (req, res, next) => {
 
     // console.log(hashedPass);
     // console.timeEnd("encryptPassword");
+    req.body.emailValidationCode = uuidv4();
 
     const user = await insertAdminUser(req.body);
     console.log(user);
-    user?._id
-      ? res.json({
-          status: "success",
-          message:
-            "Admin User Created Successfully! We have sent an email to the user with the password. Please check your email including spam folder.",
-        })
-      : res.json({
-          status: "fail",
-          message: "Admin User Creation Failed",
-        });
+    if (user?._id) {
+      res.json({
+        status: "success",
+        message:
+          "Admin User Created Successfully! We have sent an email to the user with the password. Please check your email including spam folder.",
+      });
+
+      const url = `${process.env.ROOT_DOMAIN}/admin/verify-email?c=${user.emailValidationCode}&e=${user.email}`;
+      return;
+    }
+
+    res.json({
+      status: "fail",
+      message: "Admin User Creation Failed",
+    });
   } catch (error) {
     if (error.message.includes("duplicate key")) {
       res.status(400).json({
