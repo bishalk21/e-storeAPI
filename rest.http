@@ -13,5 +13,5 @@ Content-Type: application/json
     "password": "12345",
     "phone": "9876543210",
     "address": "Kathmandu",
-    "dob": "2000-01-01"
+    "dob": "1990-01-01"
 }

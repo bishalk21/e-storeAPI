@@ -1,5 +1,6 @@
 import express from "express";
 import { hashPassword } from "../helpers/bcryptHelper.js";
+import { newAdminUserValidation } from "../middlewares/joi-validation/adminUserValidation.js";
 import { insertAdminUser } from "../model/adminUserModel /adminUserModel.js";
 // server side validation
 // encrypt password
@@ -7,13 +8,13 @@ import { insertAdminUser } from "../model/adminUserModel /adminUserModel.js";
 // create unique token verification link
 // send email with verification link to our frontend client with the email and verification token to verify the email
 const router = express.Router();
-router.post("/", async (req, res, next) => {
+router.post("/", newAdminUserValidation, async (req, res, next) => {
   try {
     const { password } = req.body;
     // console.log(req.body);
     // console.time("encryptPassword");
     // const hashedPass = hashPassword(password);
-    // req.body.password = hashPassword(password);
+    req.body.password = hashPassword(password);
 
     // console.log(hashedPass);
     // console.timeEnd("encryptPassword");
