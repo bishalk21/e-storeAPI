@@ -1,85 +1,50 @@
 import Joi from "joi";
+import {
+  DATE,
+  EMAIL,
+  FNAME,
+  LNAME,
+  PASSWORD,
+  PHONE,
+  SHORTSTR,
+  validator,
+} from "./constant.js";
 
 export const newAdminUserValidation = (req, res, next) => {
-  try {
-    // defined rules for validation
-    const schema = Joi.object({
-      fName: Joi.string().required().max(20),
-      lName: Joi.string().required().max(20),
-      email: Joi.string()
-        .email({
-          minDomainSegments: 2,
-        })
-        .required()
-        .max(20),
-      password: Joi.string().required().max(20),
-      phone: Joi.string().max(20),
-      address: Joi.string().max(100).allow("", null),
-      dob: Joi.date().allow("", null),
-    });
-    // give data type and value for validation
-    const { error } = schema.validate(req.body);
-    if (error) {
-      error.status = 200;
-      return next(error);
-    }
-
-    next();
-  } catch (error) {
-    next(error);
-  }
+  // defined rules for validation
+  const schema = Joi.object({
+    fName: FNAME.required(),
+    lName: LNAME.required(),
+    email: EMAIL.required(),
+    password: PASSWORD.required(),
+    phone: PHONE,
+    address: ADDRESS,
+    dob: DATE.allow("", null),
+  });
+  // give data type and value for validation
+  validator(req.body, schema, res, next);
 };
 
 export const verifyAdminUserValidation = (req, res, next) => {
-  try {
-    console.log(req.body);
-    // defined rules for validation
-    const schema = Joi.object({
-      email: Joi.string()
-        .email({
-          minDomainSegments: 2,
-        })
-        .required()
-        .max(20),
-      emailValidationCode: Joi.string().required().max(100),
-    });
+  console.log(req.body);
+  // defined rules for validation
+  const schema = Joi.object({
+    email: EMAIL.required(),
+    emailValidationCode: SHORTSTR.required(),
+  });
 
-    //give data type and value for validation
-    const { error } = schema.validate(req.body);
-    if (error) {
-      error.status = 200;
-      return next(error);
-    }
-
-    next(); // if no error then go to next middleware
-  } catch (error) {
-    next();
-  }
+  //give data type and value for validation
+  validator(req.body, schema, res, next);
 };
 
 export const loginValidation = (req, res, next) => {
-  try {
-    console.log(req.body);
-    // defined rules for validation
-    const schema = Joi.object({
-      email: Joi.string()
-        .email({
-          minDomainSegments: 2,
-        })
-        .required()
-        .max(20),
-      emailValidationCode: Joi.string().required().max(100),
-    });
+  console.log(req.body);
+  // defined rules for validation
+  const schema = Joi.object({
+    email: EMAIL.required(),
+    emailValidationCode: SHORTSTR.required(),
+  });
 
-    //give data type and value for validation
-    const { error } = schema.validate(req.body);
-    if (error) {
-      error.status = 200;
-      return next(error);
-    }
-
-    next(); // if no error then go to next middleware
-  } catch (error) {
-    next();
-  }
+  //give data type and value for validation
+  validator(req.body, schema, res, next);
 };
