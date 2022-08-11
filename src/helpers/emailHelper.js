@@ -5,7 +5,7 @@ import nodemailer from 'nodemailer';
 
 // email template
 
-const emailProcessor = (emailData) => {
+export const emailProcessor = async (emailBody) => {
     try {
         // create reusable transporter object using the default SMTP transport
         let transporter = nodemailer.createTransport({
@@ -20,19 +20,32 @@ const emailProcessor = (emailData) => {
 
         // send mail with defined transport object
         let info = await transporter.sendMail(emailBody);
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 
     } catch (error) {
         console.log(error);
     }
 }
 
-const verifyEmail = (emailData) => {
+export const verifyEmail = (emailData) => {
     const emailBody = {
-        from: '"Fred Foo 👻" <foo@example.com>', // sender address
-        to: "bar@example.com, baz@example.com", // list of receivers
-        subject: "Hello ✔", // Subject line
-        text: "Hello world?", // plain text body
-        html: "<b>Hello world?</b>", // html body
+        from: '"eStore 👻" <admin@estore.com>', // sender address
+        to: emailData.email, // list of receivers
+        subject: "Email Verification Instruction ✔", // Subject line
+        text: `Hi, ${emailData.fName} Please click on the link to verify your email: ${emailData.url}
+         Thank you.`, // plain text body
+    }
+    emailProcessor(emailBody);
+}
+
+export const userVerifiedNotification = (emailData) => {
+    const emailBody = {
+        from: '"eStore 👻" <admin@estore.com>', // sender address
+        to: emailData.email, // list of receivers
+        subject: "Email Verification Successful ✔", // Subject line
+        text: `Hi, ${emailData.fName} Your email has been verified successfully.
+        html: <h1>Hi, ${emailData.fName} Your email has been verified successfully.</h1>Please login to your account: <a href=" ${process.env.ROOT_DOMAIN}"> ${process.env.ROOT_DOMAIN}</a>`
+
     }
     emailProcessor(emailBody);
 }

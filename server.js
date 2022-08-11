@@ -19,7 +19,7 @@ app.use("/api/v1/admin-user", adminUserRouter);
 // Database Connection
 dbConnection();
 
-app.use("/", (req, res) => {
+app.get("/", (req, res) => {
   res.json({
     message: "Welcome to the Admin User API",
   });
@@ -28,7 +28,7 @@ app.use("/", (req, res) => {
 app.use((err, req, res, next) => {
   console.log(err);
   // res.status(500).send("Something broke!");
-  const statusCode = err.status || 500;
+  const statusCode = err.status || 404;
   res.status(statusCode).json({
     message: "Something went wrong",
   });

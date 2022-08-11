@@ -9,9 +9,19 @@ Content-Type: application/json
 {
     "fName": "Bishal",
     "lName": "Karki",
-    "email": "kb@g.com",
+    "email": "abcd@g.com",
     "password": "12345",
     "phone": "9876543210",
     "address": "Kathmandu",
     "dob": "1990-01-01"
+}
+
+### login New Admin User
+POST http://localhost:8000/api/v1/admin-user/login
+Content-Type: application/json
+
+{
+
+    "email": "adf@g.com",
+    "password": "12"
 }

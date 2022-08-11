@@ -1,8 +1,22 @@
 import express from "express";
+import { v4 as uuidv4 } from "uuid";
 
-import { hashPassword } from "../helpers/bcryptHelper.js";
-import { newAdminUserValidation } from "../middlewares/joi-validation/adminUserValidation.js";
-import { insertAdminUser } from "../model/adminUserModel /adminUserModel.js";
+import { comparePassword, hashPassword } from "../helpers/bcryptHelper.js";
+import {
+  userVerifiedNotification,
+  verifyEmail,
+} from "../helpers/emailHelper.js";
+
+import {
+  loginValidation,
+  newAdminUserValidation,
+  verifyAdminUserValidation,
+} from "../middlewares/joi-validation/adminUserValidation.js";
+import {
+  findOneAdminUser,
+  insertAdminUser,
+  updateAdminUser,
+} from "../model/adminUserModel /adminUserModel.js";
 // server side validation
 // encrypt password
 // insert into database
@@ -29,8 +43,15 @@ router.post("/", newAdminUserValidation, async (req, res, next) => {
         message:
           "Admin User Created Successfully! We have sent an email to the user with the password. Please check your email including spam folder.",
       });
-
+      // http://localhost/3000/api/v1/admin-user/verify-email?e=ac@g.com&c=019b8c57-f1c6-43e6-8469-10f57fb2bafb
       const url = `${process.env.ROOT_DOMAIN}/admin/verify-email?c=${user.emailValidationCode}&e=${user.email}`;
+      verifyEmail({
+        fName: user.fName,
+        lName: user.lName,
+        email: user.email,
+        url,
+      });
+
       return;
     }
 
@@ -49,12 +70,72 @@ router.post("/", newAdminUserValidation, async (req, res, next) => {
   }
 });
 
-router.patch("/verify-email", (req, res, next) => {
+router.patch(
+  "/verify-email",
+  verifyAdminUserValidation,
+  async (req, res, next) => {
+    try {
+      console.log(req.body);
+      const { email, emailValidationCode } = req.body;
+      const user = await updateAdminUser(
+        {
+          email,
+          emailValidationCode,
+        },
+        {
+          status: "active",
+          emailValidationCode: "",
+        }
+      );
+
+      console.log(user);
+
+      user?._id
+        ? res.json({
+            status: "success",
+            message: "Admin User Verified Successfully",
+          }) && userVerifiedNotification(user)
+        : res.json({
+            status: "error",
+            message:
+              "invalid email or email validation code, but no action taken",
+          });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post("/login", loginValidation, async (req, res, next) => {
   try {
-    console.log(req.body);
+    const { email, password } = req.body;
+    const user = await findOneAdminUser({ email });
+    console.log(user);
+    if (user.status !== "active") {
+      return res.json({
+        status: "error",
+        message: "error Login Credentials",
+      });
+    }
+    if (user?._id) {
+      // we need to verify if the password sent by user and hashed password in database matches
+
+      const isMatched = comparePassword(password, user.password);
+
+      if (isMatched) {
+        user.password = undefined;
+        return res.json({
+          status: "success",
+          message: "Login Successful",
+          user,
+        });
+      }
+    }
+
     res.json({
-      status: "success",
-      message: "Admin User Verified Successfully",
+      status: "error",
+      message:
+        "Your account is not verified, Please check your email and verify your account",
     });
   } catch (error) {
     next(error);
