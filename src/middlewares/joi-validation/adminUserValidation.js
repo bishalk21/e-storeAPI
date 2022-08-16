@@ -4,6 +4,7 @@ import {
   EMAIL,
   FNAME,
   LNAME,
+  ADDRESS,
   PASSWORD,
   PHONE,
   SHORTSTR,
@@ -18,15 +19,15 @@ export const newAdminUserValidation = (req, res, next) => {
     email: EMAIL.required(),
     password: PASSWORD.required(),
     phone: PHONE,
-    address: ADDRESS,
+    address: ADDRESS.allow("", null),
     dob: DATE.allow("", null),
   });
   // give data type and value for validation
-  validator(req.body, schema, res, next);
+  validator(schema, req, res, next);
 };
 
 export const verifyAdminUserValidation = (req, res, next) => {
-  console.log(req.body);
+  // console.log(req.body);
   // defined rules for validation
   const schema = Joi.object({
     email: EMAIL.required(),
@@ -34,17 +35,17 @@ export const verifyAdminUserValidation = (req, res, next) => {
   });
 
   //give data type and value for validation
-  validator(req.body, schema, res, next);
+  validator(schema, req, res, next);
 };
 
 export const loginValidation = (req, res, next) => {
-  console.log(req.body);
+  // console.log(req.body);
   // defined rules for validation
   const schema = Joi.object({
     email: EMAIL.required(),
-    emailValidationCode: SHORTSTR.required(),
+    password: PASSWORD.required(),
   });
 
   //give data type and value for validation
-  validator(req.body, schema, res, next);
+  validator(schema, req, res, next);
 };

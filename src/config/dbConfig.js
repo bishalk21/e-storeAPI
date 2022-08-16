@@ -11,7 +11,7 @@ export const dbConnection = () => {
         con && console.log("Connected to MongoDB");
 
     } catch (err) {
-        console.log(err);
+        err && console.log(err);
     }
 
 }

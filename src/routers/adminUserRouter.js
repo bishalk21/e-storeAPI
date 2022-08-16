@@ -56,15 +56,13 @@ router.post("/", newAdminUserValidation, async (req, res, next) => {
     }
 
     res.json({
-      status: "fail",
+      status: "error",
       message: "Admin User Creation Failed",
     });
   } catch (error) {
-    if (error.message.includes("duplicate key")) {
-      res.status(400).json({
-        status: "fail",
-        message: "Admin User Already Exists",
-      });
+    if (error.message.includes("E11000 duplicate key error collection")) {
+      error.status = 200;
+      error.message = "Email already exists";
     }
     next(error);
   }
@@ -109,17 +107,20 @@ router.patch(
 router.post("/login", loginValidation, async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await findOneAdminUser({ email });
+    const user = await findOneAdminUser({
+      email,
+    });
     console.log(user);
-    if (user.status !== "active") {
-      return res.json({
-        status: "error",
-        message: "error Login Credentials",
-      });
-    }
+
     if (user?._id) {
       // we need to verify if the password sent by user and hashed password in database matches
-
+      if (user?.status !== "active") {
+        return res.json({
+          status: "error",
+          message:
+            "Your account is not verified, Please check your email and verify your account",
+        });
+      }
       const isMatched = comparePassword(password, user.password);
 
       if (isMatched) {
@@ -134,8 +135,7 @@ router.post("/login", loginValidation, async (req, res, next) => {
 
     res.json({
       status: "error",
-      message:
-        "Your account is not verified, Please check your email and verify your account",
+      message: "Invalid email or password, but no action taken",
     });
   } catch (error) {
     next(error);

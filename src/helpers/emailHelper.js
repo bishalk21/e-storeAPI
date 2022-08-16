@@ -34,6 +34,14 @@ export const verifyEmail = (emailData) => {
         subject: "Email Verification Instruction ✔", // Subject line
         text: `Hi, ${emailData.fName} Please click on the link to verify your email: ${emailData.url}
          Thank you.`, // plain text body
+        html: `<p>Hi ${emailData.fName},</p>
+         <br/>
+            <p>Please click on the link to verify your email: <a href="${emailData.url}">${emailData.url}</a></p>
+            <br/>
+            <p>Thank you.</p>
+            <br/>
+            <p>eStore</p>
+         ` // html body
     }
     emailProcessor(emailBody);
 }
@@ -43,8 +51,8 @@ export const userVerifiedNotification = (emailData) => {
         from: '"eStore 👻" <admin@estore.com>', // sender address
         to: emailData.email, // list of receivers
         subject: "Email Verification Successful ✔", // Subject line
-        text: `Hi, ${emailData.fName} Your email has been verified successfully.
-        html: <h1>Hi, ${emailData.fName} Your email has been verified successfully.</h1>Please login to your account: <a href=" ${process.env.ROOT_DOMAIN}"> ${process.env.ROOT_DOMAIN}</a>`
+        text: `Hi, ${emailData.fName} Your email has been verified successfully. You can now login to your account. Thank you.`, // plain text body
+        html: `<h1>Hi, ${emailData.fName} Your email has been verified successfully.</h1>Please login to your account: <a href=" ${process.env.ROOT_DOMAIN}"> ${process.env.ROOT_DOMAIN}</a>`
 
     }
     emailProcessor(emailBody);
