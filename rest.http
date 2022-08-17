@@ -9,7 +9,7 @@ Content-Type: application/json
 {
     "fName": "Bishal",
     "lName": "Karki",
-    "email": "abcde@g.com",
+    "email": "abcdfe@g.com",
     "password": "12a34599",
     "phone": "9876543210",
     "address": "Kathmandu",
@@ -22,8 +22,8 @@ Content-Type: application/json
 
 {
 
-    "email": "adf@g.com",
-    "password": "12"
+    "email": "abcdfe@g.com",
+    "password": "12a34599"
 }
 
 ### Patch Admin User

@@ -6,6 +6,7 @@ import {
   userVerifiedNotification,
   verifyEmail,
 } from "../helpers/emailHelper.js";
+import { createJWTs } from "../helpers/jwtHelper.js";
 
 import {
   loginValidation,
@@ -125,10 +126,16 @@ router.post("/login", loginValidation, async (req, res, next) => {
 
       if (isMatched) {
         user.password = undefined;
+
+        //jwt token
+        const jwts = await createJWTs({
+          email,
+        });
         return res.json({
           status: "success",
           message: "Login Successful",
           user,
+          ...jwts,
         });
       }
     }

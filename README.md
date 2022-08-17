@@ -27,3 +27,24 @@ Restful API end points: can call one endpoint at a time using the different HTTP
 
 - Hashing API is used to hash the password and verify the password.
 - hash means to encrypt the password.
+
+### Joi Validation API
+
+- Joi Validation API is used to validate the data received from the client.
+
+### Authorization nnote
+
+- send login info to the login api.
+  if login success, create JWT token :
+- accessJWT, store in the cookie.
+  a. if accessJWT is expired, create new accessJWT from refreshJWT.
+  b. refreshJWT, store in the user table.
+
+  - return token to the client or frontend.
+  - store token in the browser cookie session.
+    a. accessJWT, goes in the sessionStorage (sessionStorage is a global object meaning it is available to all the pages and is in the RAM).
+    b. refreshJWT, goes in the localStorage(localStorage is available forever and is in the flash memory).
+
+## JSON Web Token
+
+- JWT is a json web token, a json object that contains a payload and a signature.
