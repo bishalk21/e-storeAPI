@@ -31,7 +31,20 @@ PATCH http://localhost:8000/api/v1/admin-user/verify-email
 Content-Type: application/json
 
 {
-
     "email": "adf@g.com",
     "password": "12"
 }
+
+### category API
+### Post New Category
+POST http://localhost:8000/api/v1/category
+Content-Type: application/json
+
+{
+    "status": "active",
+    "name": "Laptop",
+    "parentId": "62fd7ccd89a494528a812406"
+}
+
+### Get All Category
+GET http://localhost:8000/api/v1/category

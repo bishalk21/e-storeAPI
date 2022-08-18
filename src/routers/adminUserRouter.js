@@ -12,7 +12,7 @@ import {
   loginValidation,
   newAdminUserValidation,
   verifyAdminUserValidation,
-} from "../middlewares/joi-validation/adminUserValidation.js";
+} from "../middlewares/joi-validation/joiValidation.js";
 import {
   findOneAdminUser,
   insertAdminUser,

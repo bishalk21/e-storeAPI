@@ -1,5 +1,6 @@
 import Joi from 'joi';
 
+export const STATUS = Joi.string().max(20);
 export const FNAME = Joi.string().min(1).max(30);
 export const LNAME = Joi.string().min(1).max(30);
 export const EMAIL = Joi.string().email({
@@ -13,6 +14,7 @@ export const SHORTSTR = Joi.string().min(1).max(50);
 export const LONGSTR = Joi.string().min(1).max(5000);
 
 export const validator = (schema, req, res, next) => {
+
     const {
         error
     } = schema.validate(req.body);

@@ -22,7 +22,11 @@ import adminUserRouter from "./src/routers/adminUserRouter.js";
 import {
   dbConnection
 } from "./src/config/dbConfig.js";
+import categoryRouter from "./src/routers/CategoryRouter.js";
 app.use("/api/v1/admin-user", adminUserRouter);
+app.use("/api/v1/category", categoryRouter);
+
+
 
 // Database Connection
 dbConnection();

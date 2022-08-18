@@ -9,6 +9,7 @@ import {
   PHONE,
   SHORTSTR,
   validator,
+  STATUS,
 } from "./constant.js";
 
 export const newAdminUserValidation = (req, res, next) => {
@@ -49,3 +50,18 @@ export const loginValidation = (req, res, next) => {
   //give data type and value for validation
   validator(schema, req, res, next);
 };
+
+// category
+
+export const newCategoryValidation = (req, res, next) => {
+  req.body.parentId = req.body.parentId ? req.body.parentId : null;
+  // defined rules for validation
+  const schema = Joi.object({
+    status: STATUS,
+    name: SHORTSTR.required(),
+    parentId: SHORTSTR.allow(null, ""),
+  });
+
+  //give data type and value for validation
+  validator(schema, req, res, next);
+}
