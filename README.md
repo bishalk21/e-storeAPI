@@ -48,3 +48,13 @@ Restful API end points: can call one endpoint at a time using the different HTTP
 ## JSON Web Token
 
 - JWT is a json web token, a json object that contains a payload and a signature.
+
+Step 2: Protect the API end points with JWT.
+
+- receive the JWT token from the client as an authorization header.
+- verify if accessJWT is valid.
+- if accessJWT is valid, create a new accessJWT from refreshJWT.
+- verify if accessJWT exists in the sessionStorage table.
+- then, get the user info by email which is available in the accessJWT decode.
+- do next();
+- if any error, return error.

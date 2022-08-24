@@ -22,6 +22,8 @@ const categorySchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         default: null,
     },
+}, {
+    timestamps: true,
 })
 
 export default mongoose.model("category", categorySchema);

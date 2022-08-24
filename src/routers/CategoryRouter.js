@@ -1,11 +1,17 @@
 import express from "express";
 import "dotenv/config";
 import {
+  deleteCategoryById,
   getAllCategories,
   getCategoryById,
+  hasChildCategoryById,
   insertCategory,
+  updateCategoryById,
 } from "../model/category/categoryModel.js";
-import { newCategoryValidation } from "../middlewares/joi-validation/joiValidation.js";
+import {
+  newCategoryValidation,
+  updateCategoryValidation,
+} from "../middlewares/joi-validation/joiValidation.js";
 
 const router = express.Router();
 
@@ -46,6 +52,60 @@ router.post("/", newCategoryValidation, async (req, res, next) => {
       : res.json({
           status: "error",
           message: "Unable to create category, please try again",
+        });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// update category
+router.put("/", updateCategoryValidation, async (req, res, next) => {
+  try {
+    // console.log(req.body);
+    const hasChildCategory = await hasChildCategoryById(req.body._id);
+    if (hasChildCategory) {
+      return res.json({
+        status: "error",
+        message:
+          "Cannot update category with child category, please delete or re-assign child category to another category before updating",
+      });
+    }
+    const catUpdate = await updateCategoryById(req.body);
+    catUpdate?._id
+      ? res.json({
+          status: "success",
+          message: "Category Updated Successfully",
+        })
+      : res.json({
+          status: "error",
+          message: "Unable to update category, please try again",
+        });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// delete category
+router.delete("/:_id", async (req, res, next) => {
+  try {
+    const { _id } = req.params;
+    const hasChildCategory = await hasChildCategoryById(_id);
+    if (hasChildCategory) {
+      return res.json({
+        status: "error",
+        message:
+          "Cannot delete category with child category, please delete or re-assign child category to another category before deleting",
+      });
+    }
+    const catDelete = await deleteCategoryById(_id);
+    catDelete?._id
+      ? res.json({
+          status: "success",
+          message: "Category Deleted Successfully",
+        })
+      : res.json({
+          status: "error",
+          message: "Unable to delete category, please try again",
         });
   } catch (error) {
     next(error);
