@@ -58,3 +58,8 @@ Step 2: Protect the API end points with JWT.
 - then, get the user info by email which is available in the accessJWT decode.
 - do next();
 - if any error, return error.
+
+## Frontend auto login
+
+case 1: when you are refreshing the same window, accessJWT is in the sessionStorage.
+case 2; when you open link to new tab or come back to the same tab, accessJWT is in the localStorage.

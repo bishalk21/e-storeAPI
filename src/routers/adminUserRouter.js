@@ -6,7 +6,12 @@ import {
   userVerifiedNotification,
   verifyEmail,
 } from "../helpers/emailHelper.js";
-import { createJWTs } from "../helpers/jwtHelper.js";
+import {
+  createJWTs,
+  signAccessJWT,
+  verifyRefreshJWT,
+} from "../helpers/jwtHelper.js";
+import adminAuth from "../middlewares/auth-middleware/AuthMiddleware.js";
 
 import {
   loginValidation,
@@ -24,7 +29,22 @@ import {
 // create unique token verification link
 // send email with verification link to our frontend client with the email and verification token to verify the email
 const router = express.Router();
-router.post("/", newAdminUserValidation, async (req, res, next) => {
+
+router.get("/", adminAuth, (req, res, next) => {
+  try {
+    const user = req.adminInfo;
+
+    res.json({
+      status: "success",
+      message: "Welcome to the admin user router",
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/", adminAuth, newAdminUserValidation, async (req, res, next) => {
   try {
     const { password } = req.body;
     // console.log(req.body);
@@ -145,6 +165,45 @@ router.post("/login", loginValidation, async (req, res, next) => {
       message: "Invalid email or password, but no action taken",
     });
   } catch (error) {
+    next(error);
+  }
+});
+
+//generate new access token and send it to the user
+router.get("/accessjwt", async (req, res, next) => {
+  try {
+    const { authorization } = req.headers;
+
+    if (authorization) {
+      //verify the token
+      const decoded = verifyRefreshJWT(authorization);
+      // check if the token is valid or exist in the database
+
+      if (decoded.email) {
+        const user = await findOneAdminUser({
+          email: decoded.email,
+        });
+
+        if (user?._id) {
+          //create new access token and send it to the user
+
+          return res.json({
+            status: "success",
+            message: "Access Token Generated",
+            accessJWT: await signAccessJWT({ email: decoded.email }),
+
+            // const accessJWT : await signAccessJWT({ email: decoded.email })
+          });
+        }
+      }
+      // if valid, generate new access token and send it to the user
+    }
+    res.status(401).json({
+      status: "error",
+      message: "Unauthorized",
+    });
+  } catch (error) {
+    error.status = 401;
     next(error);
   }
 });

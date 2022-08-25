@@ -26,6 +26,7 @@ const adminAuth = async (req, res, next) => {
           const adminInfo = await findOneAdminUser({
             email: decoded.email,
           });
+
           if (adminInfo?._id) {
             req.adminInfo = adminInfo;
             return next();

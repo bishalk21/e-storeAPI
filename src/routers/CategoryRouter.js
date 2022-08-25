@@ -40,7 +40,6 @@ router.get("/:_id?", async (req, res, next) => {
 // insert new category
 router.post("/", newCategoryValidation, async (req, res, next) => {
   try {
-    console.log(req.body);
     req.body.slug = slugify(req.body.name, { lower: true, trim: true }); //
     const result = await insertCategory(req.body);
     // console.log(result);
@@ -62,13 +61,15 @@ router.post("/", newCategoryValidation, async (req, res, next) => {
 router.put("/", updateCategoryValidation, async (req, res, next) => {
   try {
     // console.log(req.body);
-    const hasChildCategory = await hasChildCategoryById(req.body._id);
-    if (hasChildCategory) {
-      return res.json({
-        status: "error",
-        message:
-          "Cannot update category with child category, please delete or re-assign child category to another category before updating",
-      });
+    if (req.body.parentId) {
+      const hasChildCategory = await hasChildCategoryById(req.body._id);
+      if (hasChildCategory) {
+        return res.json({
+          status: "error",
+          message:
+            "Cannot update category with child category, please delete or re-assign child category to another category before updating",
+        });
+      }
     }
     const catUpdate = await updateCategoryById(req.body);
     catUpdate?._id

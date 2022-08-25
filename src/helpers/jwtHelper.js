@@ -56,3 +56,7 @@ export const verifyJWT = (token) => {
     return message;
   }
 }
+
+export const verifyRefreshJWT = (token) => {
+  return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+}
