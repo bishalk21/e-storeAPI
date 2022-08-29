@@ -53,3 +53,32 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiY2RmZUBnLmNv
 ### Get new accesstoken
 GET http://localhost:8000/api/v1/admin-user/accessjwt
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiY2RmZUBnLmNvbSIsImlhdCI6MTY2MTMxNTgxNSwiZXhwIjoxNjYxMzE2NzE1fQ.3QjqI6COIl9mL7L1e8NUT_4rDozcySfxuJIGYw68sUM
+
+
+# ========= payment API ===========
+### Get All Payment
+GET http://localhost:8000/api/v1/payment-method
+
+### Post New Payment
+POST http://localhost:8000/api/v1/payment-method
+Content-Type: application/json
+
+{
+    "status": "active",
+    "name": "Paypal",
+    "description": "We don't accept cash anymore, please use this payment method"
+}
+
+### update payment
+PUT http://localhost:8000/api/v1/payment-method
+Content-Type: application/json
+
+{
+    "_id": "62fc39c4861ab700d014e9cc",
+    "status": "inactive",
+    "name": "payment On Delivery",
+    "description": "We don't accept cards anymore, please pay cash on delivery. We will deliver your order to you. Thank you." 
+}
+
+### delete payment
+DELETE http://localhost:8000/api/v1/payment-method/630703c8c34343d6b71f2618
