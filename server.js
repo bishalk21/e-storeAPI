@@ -31,9 +31,13 @@ app.use("/api/v1/category", adminAuth, categoryRouter);
 app.use("/api/v1/payment-method", adminAuth, paymentMethodRouter);
 app.use("/api/v1/product", ProductRouter);
 
-
 // Database Connection
 dbConnection();
+
+// serve static files from the public folder
+import path from "path";
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
   res.json({

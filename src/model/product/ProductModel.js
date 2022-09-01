@@ -10,6 +10,11 @@ export const getProduct = (filter) => {
     return ProductSchema.find(filter);
 }
 
+// by _id
+export const getProductById = (_id) => {
+    return ProductSchema.findById(_id);
+}
+
 // single product
 export const getSingleProduct = (filter) => {
     return ProductSchema.find(filter);
@@ -31,6 +36,6 @@ export const updateProduct = ({
 }
 
 //delete
-export const deleteProduct = (_id) => {
+export const deleteProductById = (_id) => {
     return ProductSchema.findByIdAndDelete(_id);
 }
