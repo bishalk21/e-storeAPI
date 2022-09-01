@@ -13,6 +13,8 @@ export const DATE = Joi.date();
 export const SHORTSTR = Joi.string().min(1).max(50);
 export const LONGSTR = Joi.string().min(1).max(5000);
 
+export const NUMBER = Joi.number();
+
 export const validator = (schema, req, res, next) => {
 
     const {

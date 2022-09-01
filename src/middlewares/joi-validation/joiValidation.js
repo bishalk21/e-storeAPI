@@ -11,6 +11,7 @@ import {
   validator,
   STATUS,
   LONGSTR,
+  NUMBER,
 } from "./constant.js";
 
 export const newAdminUserValidation = (req, res, next) => {
@@ -21,7 +22,7 @@ export const newAdminUserValidation = (req, res, next) => {
     email: EMAIL.required(),
     password: PASSWORD.required(),
     phone: PHONE,
-    address: ADDRESS.allow("", null),
+    address: ADDRESS,
     dob: DATE.allow("", null),
   });
   // give data type and value for validation
@@ -105,6 +106,38 @@ export const updatePaymentMethodValidation = (req, res, next) => {
     name: SHORTSTR.required(),
     status: STATUS.required(),
     description: LONGSTR.required(),
+  });
+
+  //give data type and value for validation
+  validator(schema, req, res, next);
+}
+
+// ====product====
+export const newProductValidation = (req, res, next) => {
+  // defined rules for validation
+  const {
+    salesPrice,
+    salesStartDate,
+    salesEndDate
+  } = req.body;
+  //sales Price is required if it is not a service product
+  req.body.salesPrice = salesPrice ? salesPrice : 0;
+
+  req.body.salesStartDate = !salesStartDate || salesStartDate === "null" ? null : salesStartDate;
+
+  req.body.salesEndDate = !salesEndDate || salesEndDate === "null" ? null : salesEndDate;
+
+  const schema = Joi.object({
+    status: STATUS.required(),
+    name: SHORTSTR.required(),
+    sku: SHORTSTR.required(),
+    description: LONGSTR.required(),
+    price: NUMBER.required(),
+    quantity: NUMBER.required(),
+    salesPrice: NUMBER,
+    salesStartDate: DATE.allow("", null),
+    salesEndDate: DATE.allow("", null),
+    catId: SHORTSTR.required(),
   });
 
   //give data type and value for validation

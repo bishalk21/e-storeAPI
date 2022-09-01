@@ -4,29 +4,27 @@ import { getSession } from "../../model/session/SessionTable.js";
 
 const adminAuth = async (req, res, next) => {
   try {
+    //receive the jwt as a authorized
     const { authorization } = req.headers;
-
     if (authorization) {
       const decoded = await verifyJWT(authorization);
 
       if (decoded === "jwt expired") {
-        return res.status(401).json({
+        return res.status(403).json({
           status: "error",
-          message: "JWT expired",
+          message: "jwt expired",
         });
       }
-
       if (decoded?.email) {
         const existInDb = await getSession({
           type: "jwt",
           token: authorization,
         });
 
-        if (existInDb?._id) {
-          const adminInfo = await findOneAdminUser({
-            email: decoded.email,
-          });
+        console.log(authorization, decoded, existInDb);
 
+        if (existInDb?._id) {
+          const adminInfo = await findOneAdminUser({ email: decoded.email });
           if (adminInfo?._id) {
             req.adminInfo = adminInfo;
             return next();
@@ -34,14 +32,9 @@ const adminAuth = async (req, res, next) => {
         }
       }
     }
-
-    // const isVerified = true;
-    // if (isVerified) {
-    //   return next();
-    // }
     res.status(401).json({
       status: "error",
-      message: "Unauthorized Access",
+      message: "Unauthorized",
     });
   } catch (error) {
     error.status = 500;

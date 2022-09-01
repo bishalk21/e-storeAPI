@@ -9,7 +9,7 @@ Content-Type: application/json
 {
     "fName": "Bishal",
     "lName": "Karki",
-    "email": "abcdfe@g.com",
+    "email": "aeddd@gg.com",
     "password": "12a34599",
     "phone": "9876543210",
     "address": "Kathmandu",
@@ -62,10 +62,10 @@ GET http://localhost:8000/api/v1/payment-method
 ### Post New Payment
 POST http://localhost:8000/api/v1/payment-method
 Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiY2RmZUBnLmNvbSIsImlhdCI6MTY2MTkxNTM4OCwiZXhwIjoxNjYxOTE2Mjg4fQ.wsiJicQwGkTJxaqGoyTGdJ1rKGeaZw2M3T7Dj75_Hl0
 
 {
-    "_id": "6306fd5c3e81e802482a55dd",
-    "status": "active",
+    "status": "inactive",
     "name": "Paypal",
     "description": "We don't accept cash anymore, please use this payment method"
 }
@@ -75,11 +75,30 @@ PUT http://localhost:8000/api/v1/payment-method
 Content-Type: application/json
 
 {
-    "_id": "6306fd5c3e81e802482a55dd",
-    "status": "inactive",
-    "name": "payment On Delivery",
+    "_id": "630ed0fcabe28e5a65cd0325",
+    "status": "active",
+    "name": "payment by paypal",
     "description": "We don't accept cards anymore, please pay cash on delivery. We will deliver your order to you. Thank you." 
 }
 
 ### delete payment
 DELETE http://localhost:8000/api/v1/payment-method/630703c8c34343d6b71f2618
+
+
+# ========= product API ===========
+### Get All Product
+GET http://localhost:8000/api/v1/product
+
+### Post New Product
+POST http://localhost:8000/api/v1/product
+Content-Type: application/json
+
+{
+    "name": "Laptop",
+    "sku": "LAP-001",
+    "description": "This is a laptop",
+    "quantity": 10,
+    "price": "100",
+    "salesPrice": "90",
+    "catId": "6305a5bf06f437657a7399bc"
+}
