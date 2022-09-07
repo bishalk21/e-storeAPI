@@ -176,7 +176,7 @@ export const updateUserValidation = (req, res, next) => {
 export const updateUserPasswordValidation = (req, res, next) => {
   const schema = Joi.object({
     _id: SHORTSTR.required(),
-    oldPassword: SHORTSTR.required(),
+    password: SHORTSTR.required(),
     newPassword: SHORTSTR.required(),
   });
 

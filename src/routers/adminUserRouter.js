@@ -104,7 +104,7 @@ router.patch(
   updateUserPasswordValidation,
   async (req, res, next) => {
     try {
-      const { _id, oldPassword, newPassword } = req.body;
+      const { _id, password, newPassword } = req.body;
 
       const userId = req.adminInfo._id.toString();
 
@@ -118,7 +118,7 @@ router.patch(
 
       const passwdFromDb = req.adminInfo.password;
 
-      const isMatch = comparePassword(oldPassword, passwdFromDb);
+      const isMatch = comparePassword(password, passwdFromDb);
       //encrypt new password
       if (isMatch) {
         const hashedPassword = hashPassword(newPassword);
