@@ -1,21 +1,21 @@
 import Joi from "joi";
 import {
+  ADDRESS,
   DATE,
   EMAIL,
   FNAME,
   LNAME,
-  ADDRESS,
+  LONGSTR,
   PASSWORD,
   PHONE,
   SHORTSTR,
-  validator,
   STATUS,
-  LONGSTR,
+  validator,
   NUMBER,
 } from "./constant.js";
 
 export const newAdminUserValidation = (req, res, next) => {
-  // defined rules for validation
+  // defind rules
   const schema = Joi.object({
     fName: FNAME.required(),
     lName: LNAME.required(),
@@ -25,121 +25,160 @@ export const newAdminUserValidation = (req, res, next) => {
     address: ADDRESS,
     dob: DATE.allow("", null),
   });
-  // give data type and value for validation
+  // give data to the rules
+
   validator(schema, req, res, next);
 };
 
-export const verifyAdminUserValidation = (req, res, next) => {
-  // console.log(req.body);
-  // defined rules for validation
+export const emailVerificationValidation = (req, res, next) => {
   const schema = Joi.object({
     email: EMAIL.required(),
     emailValidationCode: SHORTSTR.required(),
   });
 
-  //give data type and value for validation
   validator(schema, req, res, next);
 };
 
 export const loginValidation = (req, res, next) => {
-  // console.log(req.body);
-  // defined rules for validation
   const schema = Joi.object({
     email: EMAIL.required(),
     password: PASSWORD.required(),
   });
 
-  //give data type and value for validation
   validator(schema, req, res, next);
 };
 
-// category
-
+// ===== categories
 export const newCategoryValidation = (req, res, next) => {
   req.body.parentId = req.body.parentId ? req.body.parentId : null;
-  // defined rules for validation
   const schema = Joi.object({
     status: STATUS,
     name: SHORTSTR.required(),
     parentId: SHORTSTR.allow(null, ""),
   });
 
-  //give data type and value for validation
   validator(schema, req, res, next);
-}
-
-// update category validation
+};
 
 export const updateCategoryValidation = (req, res, next) => {
   req.body.parentId = req.body.parentId ? req.body.parentId : null;
-  // defined rules for validation
   const schema = Joi.object({
-    _id: SHORTSTR.required(),
     status: STATUS,
     name: SHORTSTR.required(),
     parentId: SHORTSTR.allow(null, ""),
+    _id: SHORTSTR.required(),
   });
 
-  //give data type and value for validation
   validator(schema, req, res, next);
-}
+};
 
-// ====payment method====
-
+// ========payment methods
 export const newPaymentMethodValidation = (req, res, next) => {
-  // defined rules for validation
   const schema = Joi.object({
-    name: SHORTSTR.required(),
     status: STATUS,
+    name: SHORTSTR.required(),
     description: LONGSTR.required(),
   });
 
-  //give data type and value for validation
   validator(schema, req, res, next);
-}
+};
 
-// update payment method validation
 export const updatePaymentMethodValidation = (req, res, next) => {
-  // defined rules for validation
   const schema = Joi.object({
     _id: SHORTSTR.required(),
-    name: SHORTSTR.required(),
     status: STATUS.required(),
+    name: SHORTSTR.required(),
     description: LONGSTR.required(),
   });
 
-  //give data type and value for validation
   validator(schema, req, res, next);
-}
+};
 
-// ====product====
+// ======== Products validation
 export const newProductValidation = (req, res, next) => {
-  // defined rules for validation
   const {
     salesPrice,
     salesStartDate,
     salesEndDate
   } = req.body;
-  //sales Price is required if it is not a service product
+
   req.body.salesPrice = salesPrice ? salesPrice : 0;
 
   req.body.salesStartDate = !salesStartDate || salesStartDate === "null" ? null : salesStartDate;
-
   req.body.salesEndDate = !salesEndDate || salesEndDate === "null" ? null : salesEndDate;
+
+  // console.log();
 
   const schema = Joi.object({
     status: STATUS.required(),
     name: SHORTSTR.required(),
     sku: SHORTSTR.required(),
     description: LONGSTR.required(),
+    qty: NUMBER.required(),
     price: NUMBER.required(),
-    quantity: NUMBER.required(),
     salesPrice: NUMBER,
-    salesStartDate: DATE.allow("", null),
-    salesEndDate: DATE.allow("", null),
+    salesStartDate: DATE.allow(null),
+    salesEndDate: DATE.allow(null),
     catId: SHORTSTR.required(),
   });
 
-  //give data type and value for validation
+  validator(schema, req, res, next);
+};
+
+export const updateProductValidation = (req, res, next) => {
+  const {
+    salesPrice,
+    salesStartDate,
+    salesEndDate
+  } = req.body;
+
+  req.body.salesPrice = salesPrice ? salesPrice : 0;
+
+  req.body.salesStartDate = !salesStartDate || salesStartDate === "null" ? null : salesStartDate;
+  req.body.salesEndDate = !salesEndDate || salesEndDate === "null" ? null : salesEndDate;
+
+  // console.log();
+
+  const schema = Joi.object({
+    _id: SHORTSTR.required(),
+    status: STATUS.required(),
+    name: SHORTSTR.required(),
+    description: LONGSTR.required(),
+    qty: NUMBER.required(),
+    price: NUMBER.required(),
+    salesPrice: NUMBER,
+    salesStartDate: DATE.allow(null),
+    salesEndDate: DATE.allow(null),
+    catId: SHORTSTR.required(),
+    images: LONGSTR.required(),
+    thumbnail: LONGSTR.required(),
+    imgToDel: LONGSTR.allow(null, ""),
+  });
+
+  validator(schema, req, res, next);
+};
+
+// ======== update user
+export const updateUserValidation = (req, res, next) => {
+  const schema = Joi.object({
+    _id: SHORTSTR.required(),
+    fName: FNAME.required(),
+    lName: LNAME.required(),
+    phone: PHONE,
+    address: ADDRESS,
+    dob: DATE.allow("", null),
+  });
+
+  validator(schema, req, res, next);
+}
+
+// ======== update user password validation
+export const updateUserPasswordValidation = (req, res, next) => {
+  const schema = Joi.object({
+    _id: SHORTSTR.required(),
+    oldPassword: SHORTSTR.required(),
+    newPassword: SHORTSTR.required(),
+  });
+
   validator(schema, req, res, next);
 }

@@ -1,13 +1,12 @@
-import { verifyJWT } from "../../helpers/jwtHelper.js";
-import { findOneAdminUser } from "../../model/adminUserModel /adminUserModel.js";
-import { getSession } from "../../model/session/SessionTable.js";
+import { verifyAccessJWT } from "../../helpers/jwtHelper.js";
+import { findOneAdminUser } from "../../models/adminUser/AdminUserModel.js";
+import { getSession } from "../../models/session/SessionModel.js";
 
-const adminAuth = async (req, res, next) => {
+export const adminAuth = async (req, res, next) => {
   try {
-    //receive the jwt as a authorized
     const { authorization } = req.headers;
     if (authorization) {
-      const decoded = await verifyJWT(authorization);
+      const decoded = await verifyAccessJWT(authorization);
 
       if (decoded === "jwt expired") {
         return res.status(403).json({
@@ -15,13 +14,12 @@ const adminAuth = async (req, res, next) => {
           message: "jwt expired",
         });
       }
+
       if (decoded?.email) {
         const existInDb = await getSession({
           type: "jwt",
           token: authorization,
         });
-
-        console.log(authorization, decoded, existInDb);
 
         if (existInDb?._id) {
           const adminInfo = await findOneAdminUser({ email: decoded.email });
@@ -32,14 +30,13 @@ const adminAuth = async (req, res, next) => {
         }
       }
     }
+
     res.status(401).json({
       status: "error",
-      message: "Unauthorized",
+      message: "unauthorize",
     });
   } catch (error) {
     error.status = 500;
     next(error);
   }
 };
-
-export default adminAuth;

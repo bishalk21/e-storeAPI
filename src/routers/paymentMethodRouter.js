@@ -4,21 +4,20 @@ import {
   updatePaymentMethodValidation,
 } from "../middlewares/joi-validation/joiValidation.js";
 import {
-  deletePaymentMethod,
-  getPaymentMethod,
+  deletePaymentMethodById,
+  getPaymentMethods,
   insertPaymentMethod,
-  updatePaymentMethod,
-} from "../model/payment-model/paymentMethodModal.js";
-
+  updatePaymentMethodById,
+} from "../models/payment-method/PaymentMethodModel.js";
 const router = express.Router();
 
 router.get("/", async (req, res, next) => {
   try {
-    const paymentMethods = await getPaymentMethod();
+    const pm = await getPaymentMethods();
     res.json({
       status: "success",
-      message: "Payment Method List",
-      data: paymentMethods,
+      message: "todo",
+      pm,
     });
   } catch (error) {
     error.status = 500;
@@ -28,39 +27,44 @@ router.get("/", async (req, res, next) => {
 
 router.post("/", newPaymentMethodValidation, async (req, res, next) => {
   try {
-    const paymentMethod = await insertPaymentMethod(req.body);
+    const pm = await insertPaymentMethod(req.body);
 
-    paymentMethod?._id
+    pm?._id
       ? res.json({
           status: "success",
-          message: "Payment Method Created",
+          message: "The new payment method has been added.",
         })
       : res.json({
           status: "error",
-          message: "Payment Method Not Created",
+          message:
+            "Error, unable to add new payment method, please try again later.",
         });
   } catch (error) {
+    error.status = 500;
+
     if (error.message.includes("E11000 duplicate key error collection")) {
-      error.status = 400;
-      error.message = "Payment Method Already Exists";
+      error.message =
+        "This payment method has been already added, edit them instead.";
+      error.status = 200;
     }
+
     next(error);
   }
 });
 
-// put
 router.put("/", updatePaymentMethodValidation, async (req, res, next) => {
   try {
-    const paymentMethod = await updatePaymentMethod(req.body);
+    const pm = await updatePaymentMethodById(req.body);
 
-    paymentMethod?._id
+    pm?._id
       ? res.json({
           status: "success",
-          message: "Payment Method Updated",
+          message: "The  payment method has been updated.",
         })
       : res.json({
           status: "error",
-          message: "Payment Method Not Updated",
+          message:
+            "Error, unable to update the payment method, please try again later.",
         });
   } catch (error) {
     error.status = 500;
@@ -68,20 +72,21 @@ router.put("/", updatePaymentMethodValidation, async (req, res, next) => {
   }
 });
 
-// delete
 router.delete("/:_id", async (req, res, next) => {
   try {
     const { _id } = req.params;
-    const paymentMethod = await deletePaymentMethod(_id);
 
-    paymentMethod?._id
+    const pm = await deletePaymentMethodById(_id);
+
+    pm?._id
       ? res.json({
           status: "success",
-          message: "Payment Method Deleted",
+          message: "The  payment method has been DELETED.",
         })
       : res.json({
           status: "error",
-          message: "Payment Method Not Deleted",
+          message:
+            "Error, unable to DELETE the payment method, please try again later.",
         });
   } catch (error) {
     error.status = 500;

@@ -1,29 +1,25 @@
-import Joi from 'joi';
+import Joi from "joi";
 
-export const STATUS = Joi.string().max(20);
-export const FNAME = Joi.string().min(1).max(30);
-export const LNAME = Joi.string().min(1).max(30);
-export const EMAIL = Joi.string().email({
-    minDomainSegments: 2
-}).max(20);
-export const PASSWORD = Joi.string().max(30);
-export const PHONE = Joi.string().min(10).max(10);
-export const ADDRESS = Joi.string().min(1).max(30);
+export const STATUS = Joi.string().max(10);
+export const FNAME = Joi.string().max(20);
+export const LNAME = Joi.string().max(20);
+export const EMAIL = Joi.string().email({ minDomainSegments: 2 });
+export const PASSWORD = Joi.string().max(100);
+export const PHONE = Joi.string().max(100);
+export const ADDRESS = Joi.string().max(100).allow("", null);
 export const DATE = Joi.date();
-export const SHORTSTR = Joi.string().min(1).max(50);
-export const LONGSTR = Joi.string().min(1).max(5000);
+
+export const SHORTSTR = Joi.string().max(100);
+export const LONGSTR = Joi.string().max(5000);
 
 export const NUMBER = Joi.number();
 
 export const validator = (schema, req, res, next) => {
+  const { error } = schema.validate(req.body);
+  if (error) {
+    error.status = 200;
+    return next(error);
+  }
 
-    const {
-        error
-    } = schema.validate(req.body);
-    if (error) {
-        error.status = 200;
-        return next(error);
-    }
-
-    next();
-}
+  next();
+};

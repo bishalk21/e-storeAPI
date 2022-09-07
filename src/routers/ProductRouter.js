@@ -1,24 +1,28 @@
 import express from "express";
 import slugify from "slugify";
-import { newProductValidation } from "../middlewares/joi-validation/joiValidation.js";
+import {
+  newProductValidation,
+  updateProductValidation,
+} from "../middlewares/joi-validation/joiValidation.js";
 import {
   addProduct,
   deleteProductById,
-  getProduct,
+  getAllProducts,
   getProductById,
-} from "../model/product/ProductModel.js";
+  updateProductById,
+} from "../models/product/ProductModel.js";
+const router = express.Router();
 import multer from "multer";
 import fs from "fs";
 
-const router = express.Router();
-
-// multer for image upload and validation
-const fileUploadDest = "./public/images/products";
+//setup multer for validaton and upload destination
+const filUploadDestination = "public/img/products";
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     let error = null;
-    // validate image type
-    cb(error, fileUploadDest);
+    // validation test if needed....
+
+    cb(error, filUploadDestination);
   },
   filename: (req, file, cb) => {
     const fullFileName = Date.now() + "-" + file.originalname;
@@ -27,15 +31,15 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-// get all products
+
 router.get("/:_id?", async (req, res, next) => {
   try {
     const { _id } = req.params;
-    const products = _id ? await getProductById(_id) : await getProduct();
-    // const products = await getProduct();
+    const products = _id ? await getProductById(_id) : await getAllProducts();
+
     res.json({
       status: "success",
-      message: "to do",
+      message: "todo get method",
       products,
     });
   } catch (error) {
@@ -43,71 +47,106 @@ router.get("/:_id?", async (req, res, next) => {
   }
 });
 
-// get a product
 router.post(
   "/",
-  upload.array("images", 10),
+  upload.array("images", 5),
   newProductValidation,
   async (req, res, next) => {
     try {
       const files = req.files;
-      // console.log(files);
+
       if (files.length) {
-        const images = files.map((images) => images.path.slice(6));
+        const images = files.map((img) => img.path.slice(6));
         console.log(images);
 
         req.body.images = images;
         req.body.thumbnail = images[0];
       }
 
-      // console.log(req.body);
-      // slugify the product name
-      // req.body.sluge = slugify(req.body.name, { lower: true, trim: true });
       const sluge = slugify(req.body.name, { lower: true, trim: true });
-      // console.log(sluge);
+      console.log(sluge);
       req.body.slug = sluge;
       const result = await addProduct(req.body);
 
       result?._id
         ? res.json({
             status: "success",
-            message: "product added successfully",
+            message: "New Product has been added",
           })
         : res.json({
             status: "error",
-            message: "Unable to add product, Please try again",
+            message: "Unable to add the product, Please try again later",
           });
     } catch (error) {
       let message = error.message;
-      if (message.includes("E11000 duplicate key error")) {
-        error.message = "Product already exists";
+
+      if (message.includes("E11000 duplicate key error collection")) {
+        error.message =
+          "There is already another product with the same name and sluge or SKU. Chang the product details and resubmit again";
       }
+
       next(error);
     }
   }
 );
 
-// delete a product
+// update
+router.put(
+  "/:_id",
+  upload.array("newImages", 5),
+  updateProductValidation,
+  async (req, res, next) => {
+    try {
+      const { body, files } = req;
+      let { images, imgToDel } = body;
+      images = images.split(",");
+      imgToDel = imgToDel.split(",");
+      const imgAfterFilter = images.filter((img) => !imgToDel.includes(img));
+
+      if (files) {
+        const newImages = files.map((img) => img.path.slice(6));
+        images = [...images, ...newImages];
+      }
+
+      const product = await updateProductById(body);
+
+      product?._id
+        ? res.json({
+            status: "success",
+            message: "Product has been updated",
+          })
+        : res.json({
+            status: "error",
+            message: "Unable to update the product, Please try again later",
+          });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 router.delete("/:_id", async (req, res, next) => {
   try {
     const { _id } = req.params;
     const imgToDelete = req.body;
-    // delete product from disk not recommended to use
+    // deleteing img from disk, not recommended in the production
     if (imgToDelete.length) {
-      imgToDelete.map((item) => {
-        item && fs.unlinkSync("./public/" + item);
-      });
+      imgToDelete.map((item) => item && fs.unlinkSync("./public/" + item));
     }
-    // delete product from database bassed on id
+
+    // delete the product form the databse based on the given _id
+
     const product = await deleteProductById(_id);
+
     product?._id
       ? res.json({
           status: "success",
-          message: "product deleted successfully",
+          message: "The product has been deleted successfully",
         })
       : res.json({
           status: "error",
-          message: "Unable to delete product, Please try again",
+          message:
+            "Error, Unable to delete the product, Please try again later.",
         });
   } catch (error) {
     error.status = 500;

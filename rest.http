@@ -1,104 +1,105 @@
-### Check server status
-GET http://localhost:8000/
+### check server status
+GET http://localhost:8000
 
-# Admin API
-### Post New Admin User
+# ======= Admin API
+### post new admin user
 POST http://localhost:8000/api/v1/admin-user
 Content-Type: application/json
 
 {
-    "fName": "Bishal",
-    "lName": "Karki",
-    "email": "aeddd@gg.com",
-    "password": "12a34599",
-    "phone": "9876543210",
-    "address": "Kathmandu",
-    "dob": "1990-01-01"
+    "fName":"Prem",
+    "lName": "Acharya",
+    "email": "a@a3.com",
+    "password": "123456",
+    "phone": "123456789",
+    "address": "sydney",
+    "dob": ""
 }
 
-### login New Admin User
+### login admin user
 POST http://localhost:8000/api/v1/admin-user/login
 Content-Type: application/json
 
 {
-
-    "email": "abcdfe@g.com",
-    "password": "12a34599"
+    
+    "email": "a@a.com",
+    "password": "123456"
+  
 }
 
-### Patch Admin User
-PATCH http://localhost:8000/api/v1/admin-user/verify-email
-Content-Type: application/json
+### get new accessJWT
+GET  http://localhost:8000/api/v1/admin-user/accessjwt
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFAYS5jb20iLCJpYXQiOjE2NjEzODYzODIsImV4cCI6MTY2Mzk3ODM4Mn0.Ysy_hH67qTzn8SV_x_iW60oUZIFwG2CKRsa6CiwtxJI
 
-{
-    "email": "adf@g.com",
-    "password": "12"
-}
 
-### category API
-### Post New Category
-POST http://localhost:8000/api/v1/category
+# ======== category apis
+
+### create new category
+POST  http://localhost:8000/api/v1/category
 Content-Type: application/json
 
 {
     "status": "active",
-    "name": "Laptop",
-    "parentId": "62fd7ccd89a494528a812406"
+    "name": "MacBook Laptops",
+    "parentId": "62fd7a7da485fb1a10c4e278"
 }
 
-### Get All Category
+
+### get categories
 GET http://localhost:8000/api/v1/category
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiY2RmZUBnLmNvbSIsImlhdCI6MTY2MTMxNTgxNSwiZXhwIjoxNjYxMzE2NzE1fQ.3QjqI6COIl9mL7L1e8NUT_4rDozcySfxuJIGYw68sUM
-
-### Get new accesstoken
-GET http://localhost:8000/api/v1/admin-user/accessjwt
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiY2RmZUBnLmNvbSIsImlhdCI6MTY2MTMxNTgxNSwiZXhwIjoxNjYxMzE2NzE1fQ.3QjqI6COIl9mL7L1e8NUT_4rDozcySfxuJIGYw68sUM
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFAYS5jb20iLCJpYXQiOjE2NjEzMTU4MDUsImV4cCI6MTY2MTMxNjcwNX0.qfWc46Kfp-hlJ5SEbnaIKOiNWeJUfCB7i3n3EN24aMc
 
 
-# ========= payment API ===========
-### Get All Payment
+# ============ payment methods
+
+###get payment methods
 GET http://localhost:8000/api/v1/payment-method
 
-### Post New Payment
-POST http://localhost:8000/api/v1/payment-method
+
+###post payment methods
+POST  http://localhost:8000/api/v1/payment-method
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiY2RmZUBnLmNvbSIsImlhdCI6MTY2MTkxNTM4OCwiZXhwIjoxNjYxOTE2Mjg4fQ.wsiJicQwGkTJxaqGoyTGdJ1rKGeaZw2M3T7Dj75_Hl0
 
 {
     "status": "inactive",
-    "name": "Paypal",
-    "description": "We don't accept cash anymore, please use this payment method"
+    "name": "Pay By PayId",
+    "description" : "Follow the instruction to pay by PayId. AMEX is not supported"
 }
 
-### update payment
-PUT http://localhost:8000/api/v1/payment-method
+
+### update payament methods     
+PUT  http://localhost:8000/api/v1/payment-method
 Content-Type: application/json
 
 {
-    "_id": "630ed0fcabe28e5a65cd0325",
+    "_id": "6306fc0f3d68613290aa4dc0",
     "status": "active",
-    "name": "payment by paypal",
-    "description": "We don't accept cards anymore, please pay cash on delivery. We will deliver your order to you. Thank you." 
+    "name": "Pay By PAYID",
+    "description" : "Follow the instruction to pay by PayId. "
 }
 
-### delete payment
-DELETE http://localhost:8000/api/v1/payment-method/630703c8c34343d6b71f2618
+### update payament methods     
+DELETE   http://localhost:8000/api/v1/payment-method/6306fc0f3d68613290aa4dc0
 
 
-# ========= product API ===========
-### Get All Product
+# ========= product apis
+
+### get products
 GET http://localhost:8000/api/v1/product
 
-### Post New Product
-POST http://localhost:8000/api/v1/product
+### Post product
+POST  http://localhost:8000/api/v1/product
 Content-Type: application/json
 
 {
-    "name": "Laptop",
-    "sku": "LAP-001",
-    "description": "This is a laptop",
-    "quantity": 10,
-    "price": "100",
-    "salesPrice": "90",
-    "catId": "6305a5bf06f437657a7399bc"
+ "name": "google book pro",
+ "sku": "google-14",
+ "description": "lorem lafjlsajfl lasdjflaslfas l jld lsajdlfjaajafj",
+ "qty": 100,
+ "price": 3000,
+ "salesPrice": 0,
+ "salesStartDate": null,
+ "salesEndDate": null,
+ "catId": "62fd7aaca485fb1a10c4e27a"
+
 }
