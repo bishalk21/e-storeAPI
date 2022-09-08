@@ -28,7 +28,7 @@ const emailProcesser = async (emailBody) => {
 export const verificationEmail = (emailData) => {
   console.log(emailData);
   const emailBody = {
-    from: '"Prem Store 👻" <myemail@premstore.com>', // sender address
+    from: '"eStore 👻" <myemail@estore.com>', // sender address
     to: emailData.email, // list of receivers
     subject: "Email verification instruction", // Subject line
     text: `Hi ${emailData.fName}, please follow the linke to verify your email: ${emailData.url}`, // plain text body
@@ -43,7 +43,7 @@ export const verificationEmail = (emailData) => {
 
         <p>
         Regards, <br />
-        Prem digital Store
+        eStore Team 
         </p>
     
         `, // html body
@@ -54,7 +54,7 @@ export const verificationEmail = (emailData) => {
 //make suer the emaiData has fName,e mail and url
 export const userVerifiednotification = (emailData) => {
   const emailBody = {
-    from: '"Prem Store 👻" <myemail@premstore.com>', // sender address
+    from: '"eStore 👻" <myemail@estore.com>', // sender address
     to: emailData.email, // list of receivers
     subject: "Your account has been verified", // Subject line
     text: `Hi ${emailData.fName}, You account has been verified, you may logined in now. ${process.env.ROOT_DOMAI} `, // plain text body
@@ -71,7 +71,7 @@ export const userVerifiednotification = (emailData) => {
 
         <p>
         Regards, <br />
-        Prem digital Store
+        eStore Team
         </p>
     
         `, // html body
@@ -79,3 +79,31 @@ export const userVerifiednotification = (emailData) => {
 
   emailProcesser(emailBody);
 };
+
+// send otp to user email
+export const sendOTP = (emailData) => {
+  console.log(emailData);
+  const emailBody = {
+    from: '"eStore 👻" <myemail@estore.com>', // sender address
+    to: emailData.email, // list of receivers
+    subject: "OTP for password reset", // Subject line
+    text: `Hi ${emailData.fName}, please use the OTP to reset your password: ${emailData.otp}`, // plain text body
+    html: `
+        <p>Hi ${emailData.fName}</p>
+        <br />
+        <br />
+        <p> please use the OTP to reset your password</p>
+        <br />
+        <br />
+        <p >  ${emailData.otp} </p>
+
+        <p>
+        Regards, <br />
+        eStore Team 
+        </p>
+        `
+
+  };
+
+  emailProcesser(emailBody);
+}

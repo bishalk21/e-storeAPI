@@ -15,6 +15,7 @@ import {
 const router = express.Router();
 import { v4 as uuidv4 } from "uuid";
 import {
+  sendOTP,
   userVerifiednotification,
   verificationEmail,
 } from "../helpers/emailHelper.js";
@@ -24,6 +25,8 @@ import {
   verifyRefreshJWT,
 } from "../helpers/jwtHelper.js";
 import { adminAuth } from "../middlewares/auth-middleware/authMiddleware.js";
+import { createOTP } from "../utils/RandomGenerator.js";
+import { insertSession } from "../models/session/SessionModel.js";
 
 router.get("/", adminAuth, (req, res, next) => {
   try {
@@ -256,6 +259,44 @@ router.get("/accessjwt", async (req, res, next) => {
     });
   } catch (error) {
     error.status = 401;
+    next(error);
+  }
+});
+
+// password reset as logged out user
+router.post("/request-password-reset-otp", async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    console.log(email);
+    // check if email exist in db
+    if (email.includes("@")) {
+      const user = await findOneAdminUser({ email });
+      console.log(user);
+      if (user?._id) {
+        // create unique code and send it to the user email amd store it in db with the email
+        const otp = createOTP();
+        const obj = {
+          token: otp,
+          associate: email,
+          type: "updatePassword",
+        };
+        const result = await insertSession(obj);
+        if (result?._id) {
+          // create unique otp for the frontend to send the user to reset password
+          sendOTP({
+            email,
+            otp: result.token,
+            fName: result.associate,
+          });
+        }
+      }
+    }
+
+    res.json({
+      status: "success",
+      message: "OTP sent to your email",
+    });
+  } catch (error) {
     next(error);
   }
 });
