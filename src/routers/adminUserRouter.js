@@ -4,6 +4,7 @@ import {
   emailVerificationValidation,
   loginValidation,
   newAdminUserValidation,
+  resetAdminPasswordValidation,
   updateUserPasswordValidation,
   updateUserValidation,
 } from "../middlewares/joi-validation/joiValidation.js";
@@ -26,7 +27,10 @@ import {
 } from "../helpers/jwtHelper.js";
 import { adminAuth } from "../middlewares/auth-middleware/authMiddleware.js";
 import { createOTP } from "../utils/RandomGenerator.js";
-import { insertSession } from "../models/session/SessionModel.js";
+import {
+  deleteSession,
+  insertSession,
+} from "../models/session/SessionModel.js";
 
 router.get("/", adminAuth, (req, res, next) => {
   try {
@@ -263,7 +267,7 @@ router.get("/accessjwt", async (req, res, next) => {
   }
 });
 
-// password reset as logged out user
+//  request otp to reset password
 router.post("/request-password-reset-otp", async (req, res, next) => {
   try {
     const { email } = req.body;
@@ -300,5 +304,48 @@ router.post("/request-password-reset-otp", async (req, res, next) => {
     next(error);
   }
 });
+
+// password reset as logged out user
+router.patch(
+  "/reset-password",
+  resetAdminPasswordValidation,
+  async (req, res, next) => {
+    try {
+      const { email, otp, password } = req.body;
+
+      const filter = {
+        token: otp,
+        associate: email,
+        type: "updatePassword",
+      };
+
+      // find if filter exist in session db and delete it
+      const result = await deleteSession(filter);
+      if (result?._id) {
+        // update password in db
+        const encrypted = hashPassword(req.body.password);
+        const user = await updateOneAdminUser(
+          { email },
+          { password: encrypted }
+        ); //
+        if (user?._id) {
+          res.json({
+            status: "success",
+            message: "Password updated successfully",
+          });
+        }
+      }
+      // if delete is successful update the password in the user db
+      //then encrypt the password and update it in the db by email id
+
+      res.json({
+        status: "error",
+        message: "Invalid OTP",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default router;
