@@ -9,6 +9,8 @@ import {
   updateUserValidation,
 } from "../middlewares/joi-validation/joiValidation.js";
 import {
+  deleteAdminUser,
+  findAllAdminUsers,
   findOneAdminUser,
   insertAdminUser,
   updateOneAdminUser,
@@ -47,7 +49,20 @@ router.get("/", adminAuth, (req, res, next) => {
   }
 });
 
-router.post("/", newAdminUserValidation, async (req, res, next) => {
+router.get("/all-admin", adminAuth, async (req, res, next) => {
+  try {
+    const users = await findAllAdminUsers();
+
+    res.json({
+      status: "success",
+      message: "todo",
+      users,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+router.post("/", adminAuth, newAdminUserValidation, async (req, res, next) => {
   try {
     const { password } = req.body;
     req.body.password = hashPassword(password);
@@ -347,5 +362,35 @@ router.patch(
     }
   }
 );
+// delete user account
+router.delete("/:_id", async (req, res, next) => {
+  try {
+    const { _id } = req.params;
+    const users = await findAllAdminUsers();
+    //check if this is the last user in the db, if so say so but no delete
 
+    if (users.length <= 1) {
+      return res.json({
+        status: "error",
+        message: "Sorry, your are the last admin, can't be deleted",
+      });
+    }
+    //if not delete from db
+
+    const deletedUser = await deleteAdminUser(_id);
+    if (deletedUser?._id) {
+      return res.json({
+        status: "success",
+        message: "The user has been deleted",
+      });
+    }
+
+    res.json({
+      status: "error",
+      message: "Error, Something went wrong, Pelase try again later",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 export default router;

@@ -10,9 +10,7 @@ import path from "path";
 const PORT = process.env.PORT || 8000;
 
 //db connection
-import {
-  dbConnection
-} from "./src/config/dbConfig.js";
+import { dbConnection } from "./src/config/dbConfig.js";
 dbConnection();
 
 // middlewares
@@ -28,17 +26,20 @@ app.use(express.static(path.join(__dirname, "public")));
 //apis
 import adminUserRouter from "./src/routers/adminUserRouter.js";
 import categoryRouter from "./src/routers/categoryRouter.js";
-import {
-  adminAuth
-} from "./src/middlewares/auth-middleware/authMiddleware.js";
+import { adminAuth } from "./src/middlewares/auth-middleware/authMiddleware.js";
 import paymentMethodRouter from "./src/routers/paymentMethodRouter.js";
 import productRouter from "./src/routers/productRouter.js";
 import OrderRouter from "./src/routers/OrderRouter.js";
+import reviewRouter from "./src/routers/reviewRouter.js";
+import userRouter from "./src/routers/userRouter.js";
+
 app.use("/api/v1/order", OrderRouter);
 app.use("/api/v1/admin-user", adminUserRouter);
 app.use("/api/v1/category", adminAuth, categoryRouter);
 app.use("/api/v1/payment-method", adminAuth, paymentMethodRouter);
-app.use("/api/v1/product", productRouter);
+app.use("/api/v1/product", adminAuth, productRouter);
+app.use("/api/v1/review", adminAuth, reviewRouter);
+app.use("/api/v1/users", adminAuth, userRouter);
 
 app.get("/", (req, res) => {
   res.json({
@@ -58,7 +59,6 @@ app.use((error, req, res, next) => {
 
 app.listen(PORT, (error) => {
   error
-    ?
-    console.log(error) :
-    console.log(`Server running at http://localhost:${PORT}`);
+    ? console.log(error)
+    : console.log(`Server running at http://localhost:${PORT}`);
 });
