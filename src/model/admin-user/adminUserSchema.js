@@ -31,7 +31,7 @@ const adminUserSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please enter your phone number"],
         maxLength: [20, "Phone number can't be more than 20 characters'"]
-    },
+    },  
     address: {
         type: String,
         maxLength: [20, "Address can't be more than 20 characters'"],

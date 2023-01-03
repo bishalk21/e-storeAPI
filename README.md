@@ -39,4 +39,6 @@ All the Admin API end points will follow the following pattern
 - encrypt user password
 - insert into db
 - send email with verification code
+- joi for server side validation
+
 

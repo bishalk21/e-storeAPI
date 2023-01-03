@@ -1,18 +1,21 @@
 import express from "express";
 import { hashPassword } from "../helpers/bcryptHelper.js";
+import { newAdminUserValidation } from "../middlewares/joi-validation/AdminUserValidation.js";
 import { addNewUser } from "../model/admin-user/adminUserModel.js";
 const router = express.Router();
 
 // create new user
-router.post("/",async (req,res,next)=> {
+router.post("/",newAdminUserValidation,async (req,res,next)=> {
     try {
         // console.log(req.body);
         const {password} = req.body;
         // console.log(password);
+        console.time("timer")
 
         const hasPass = hashPassword(password);
         // console.log(hasPass);
         const user = await addNewUser(req.body)
+        console.timeEnd("timer")
 
         user?._id ? (
             res.json({
