@@ -3,6 +3,11 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 
+// DATABASE
+import connectDb from "./src/config/dbConfig.js";
+connectDb();
+
+// MIDDLEWARES
 const app = express();
 app.use(cors());
 app.use(helmet());
@@ -10,6 +15,12 @@ app.use(express.json())
 
 // PORT
 const PORT = process.env.PORT || 8000;
+
+// ROUTES
+import adminUserRouter from "./src/routers/adminUserRouter.js";
+
+// Routes api
+app.use("/api/v1/admin-user", adminUserRouter);
 
 // global ssr
 app.get("/", (req, res) => {

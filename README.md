@@ -32,3 +32,11 @@ All the Admin API end points will follow the following pattern
 | 1 | `/` | POST | NO |  recieves new admin user data and create new admin in our database. If admin user's email already exit, it will return error otherwise it will return success with user info from database. |
 | 2 | `/verify-email` | PATCH | NO |  recieves `email verifiacation code` to verify newly create user action, returns success or error accordingly. |
 | 3 | `/login` | POST | NO |  recieves `email` and `password` to login admin user, returns success or error accordingly. |
+
+
+### Server Side Validation
+
+- encrypt user password
+- insert into db
+- send email with verification code
+

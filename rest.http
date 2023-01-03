@@ -3,3 +3,15 @@ GET http://localhost:8000
 
 # ========= ADMIN API
 ### post new user
+POST http://localhost:8000/api/v1/admin-user
+Content-Type: application/json
+
+{
+    "firstName": "Bishal",
+    "lastName": "Karki",
+    "email": "k1b@gmai.com",
+    "password": "asdfgh123",
+    "address": "asdfgh123",
+    "phone": "1234456",
+    "dob": "2000-04-29"
+}
