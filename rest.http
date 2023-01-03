@@ -9,7 +9,7 @@ Content-Type: application/json
 {
     "firstName": "Bishal",
     "lastName": "Karki",
-    "email": "k2b@gmai.com",
+    "email": "bishalk@gmail.com",
     "password": "asdfgh123",
     "address": "asdfgh123",
     "phone": "1234456",

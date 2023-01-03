@@ -40,5 +40,8 @@ All the Admin API end points will follow the following pattern
 - insert into db
 - send email with verification code
 - joi for server side validation
+- uuidv4 for unique id for user
+- bcrypt for password encryption
+- nodemailer for sending email
 
 

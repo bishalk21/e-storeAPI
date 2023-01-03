@@ -40,6 +40,10 @@ const adminUserSchema = new mongoose.Schema({
     dob: {
         type: Date,
         default: "n/a",
+    },
+    emailValidateCode: {
+        type: String,
+        default: "",
     }
 }, {
     timestamps: true,
