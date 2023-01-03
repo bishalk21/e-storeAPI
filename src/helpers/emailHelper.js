@@ -50,3 +50,27 @@ export const verificationEmail = (emailData) => {
 
     emailProcessor(emailBody);
 }
+
+// make sure the emailData has firstName, email and url
+export const userVerifyNotification = (emailData) => {
+
+  const emailBody = {
+      from: '"FEWA-STORE" <carkeybeekey@gmail.com>', // sender address
+      to: emailData.email, // list of receivers
+      subject: "Yor account has been verified", // Subject line
+      text: `Hi ${emailData.firstName}, your account has been verified, please login to continue. `, // plain text body
+      // html body
+      html: `
+      <h1>Hi ${emailData.firstName},</h1>
+      <br />
+      <p>Your account has been verified, please login to continue. </p>
+      <br />
+      <a href="${process.env.ROOT_DOMAIN}">${process.env.ROOT_DOMAIN}</a>
+      <br />
+      <p>Thanks</p>
+      <p>FEWA-STORE</p>
+      `,
+  }
+
+  emailProcessor(emailBody);
+}

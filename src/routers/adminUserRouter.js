@@ -1,9 +1,9 @@
 import express from "express";
 import { hashPassword } from "../helpers/bcryptHelper.js";
-import { newAdminUserValidation } from "../middlewares/joi-validation/AdminUserValidation.js";
-import { addNewUser } from "../model/admin-user/adminUserModel.js";
+import { emailVerificationValidation, newAdminUserValidation } from "../middlewares/joi-validation/AdminUserValidation.js";
+import { addNewUser, updateOneUser } from "../model/admin-user/adminUserModel.js";
 import {  v4 as uuidv4 } from 'uuid';
-import { verificationEmail } from "../helpers/emailHelper.js";
+import { userVerifyNotification, verificationEmail } from "../helpers/emailHelper.js";
 const router = express.Router();
 
 // create new user
@@ -17,7 +17,7 @@ router.post("/",newAdminUserValidation,async (req,res,next)=> {
         // email validation
         req.body.emailValidateCode = uuidv4();
 
-        const hasPass = hashPassword(password);
+        req.body.password = hashPassword(password);
         // console.log(hasPass);
         const user = await addNewUser(req.body)
         // console.timeEnd("timer")
@@ -30,7 +30,7 @@ router.post("/",newAdminUserValidation,async (req,res,next)=> {
             })
 
         // sending link to user
-        const url = `${process.env.ROOT_DOMAIN}/admin/verify-email?c=${user.emailValidateCode}&e=${user.email}}`
+        const url = `${process.env.ROOT_DOMAIN}/admin/verify-email?c=${user.emailValidateCode}&e=${user.email}`
 
         verificationEmail({
             firstName: user.firstName,
@@ -56,13 +56,27 @@ router.post("/",newAdminUserValidation,async (req,res,next)=> {
 })
 
 // verify user
-router.patch("/verify-email", (req,res,next)=> {
+router.patch("/verify-email",emailVerificationValidation, async (req,res,next)=> {
     try {
-        console.log(req.body);
+        // console.log(req.body);
+        const {emailValidateCode, email} = req.body;
 
+        const result = await updateOneUser({
+            emailValidateCode,
+            email
+        },{
+            status: "active",
+            emailValidateCode: ""
+        })
+
+        user?._id ?
         res.json({
             status: "success",
-            message: "User verified"
+            message: "Your account has been verified, please login to continue"
+        }) && userVerifyNotification(user)
+         : res.json({
+            status: "error",
+            message: "Unable to verify your account, please try again later"
         })
 
     } catch (error) {
