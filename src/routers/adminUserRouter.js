@@ -4,7 +4,7 @@ import { emailVerificationValidation, newAdminUserValidation } from "../middlewa
 import { addNewUser, findOneUser, updateOneUser } from "../model/admin-user/adminUserModel.js";
 import {  v4 as uuidv4 } from 'uuid';
 import { userVerifyNotification, verificationEmail } from "../helpers/emailHelper.js";
-import { signAccessJWT } from "../helpers/jwtHelper.js";
+import { createJWTs, signAccessJWT } from "../helpers/jwtHelper.js";
 const router = express.Router();
 
 // create new user
@@ -117,13 +117,13 @@ router.post("/login", async (req,res,next)=> {
             user.password = undefined;
 
             // before login success, we need to have jwt
-            const jwts = await signAccessJWT({email});
+            const jwts = await createJWTs({email});
 
             return res.json({
                 status: "success",
                 message: "Login successful",
                 user,
-                jwts
+                ...jwts
             })
         }
         }
