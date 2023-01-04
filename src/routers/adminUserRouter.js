@@ -69,7 +69,7 @@ router.patch("/verify-email",emailVerificationValidation, async (req,res,next)=>
             status: "active",
             emailValidateCode: "",
         })
-        console.log(user);
+        // console.log(user);
 
         user?._id ?
         res.json({
