@@ -15,3 +15,12 @@ Content-Type: application/json
     "phone": "1234456",
     "dob": "2000-04-29"
 }
+
+### login admin user
+POST http://localhost:8000/api/v1/admin-user/login
+Content-Type: application/json
+
+{
+    "email": "kb@g.com",
+    "password": "asdfg"
+}

@@ -7,5 +7,10 @@ import AdminUserSchema from "./adminUserSchema.js";
 
  // update user 
  export const updateOneUser = (filter, update) => {
-      return AdminUserSchema.findOneAndUpdate(filter, update, {new: true});
+      return AdminUserSchema.findOneAndUpdate(filter, update, {new: true,});
  }
+
+ // find a user 
+   export const findOneUser = (filter) => {
+      return AdminUserSchema.findOne(filter);
+   }

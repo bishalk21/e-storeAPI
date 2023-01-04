@@ -31,11 +31,35 @@ export const newAdminUserValidation = (req,res,next) => {
     }
 }
 
+// email verification
 export const emailVerificationValidation = (req, res, next) => {
     try {
         const schema = Joi.object({
             email: Joi.string().email({minDomainSegments: 2}),
             emailValidateCode: Joi.string().max(100).required(),
+        })
+
+        const {error} = schema.validate(req.body);
+        // console.log(error);
+
+        if (error){
+            error.status = 200;
+            return next(error)
+        }
+
+        next()
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+// login validation
+export const loginValidation = (req, res, next) => {
+    try {
+        const schema = Joi.object({
+            email: Joi.string().email({minDomainSegments: 2}).required(),
+            password: Joi.string().max(100).required(),
         })
 
         const {error} = schema.validate(req.body);
