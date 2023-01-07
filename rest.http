@@ -24,3 +24,14 @@ Content-Type: application/json
     "email": "kb@g.com",
     "password": "asdfg"
 }
+
+# =============== category api
+### post new category
+POST http://localhost:8000/api/v1/category
+Content-Type: application/json
+
+{
+    "status": "success",
+    "name": "Electronics",
+    "parentCatId": ""
+}

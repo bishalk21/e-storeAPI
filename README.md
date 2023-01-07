@@ -75,3 +75,12 @@ A. JSON Web Token is an open standard (RFC 7519) that defines a compact and self
 In simple terms, JWT is some piece of text or string that is used for authorizing user in the backend.
 
 The purpose of using JWT is not to hide data but to ensure the authenticity of the data. JWT is signed and encoded, not encrypted.
+
+## slug
+
+- slug is a unique string that is used to identify a resource
+
+## How to install slug
+
+- npm install slug
+
