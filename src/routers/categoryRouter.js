@@ -2,11 +2,18 @@ import express from "express";
 import { newCategoryValidation } from "../middlewares/joi-validation/categoryValidation.js";
 import { addCategory } from "../model/category/categoryModel.js";
 const router = express.Router();
+import slugify from "slugify";
 
 // add category
 router.post("/", newCategoryValidation, async (req, res, next) => {
   try {
     // console.log(req.body);
+
+    // slugify to category
+    req.body.slug = slugify(req.body.name, {
+      lower: true,
+      trim: true,
+    });
 
     const result = await addCategory(req.body);
 

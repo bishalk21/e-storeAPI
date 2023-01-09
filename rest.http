@@ -32,6 +32,6 @@ Content-Type: application/json
 
 {
     "status": "success",
-    "name": "Electronics",
-    "parentCatId": ""
+    "name": "Bulb",
+    "parentCatId": "63bb9943e674d1497cf9add3"
 }
