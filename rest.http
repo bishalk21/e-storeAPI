@@ -35,3 +35,6 @@ Content-Type: application/json
     "name": "Bulb",
     "parentCatId": "63bb9943e674d1497cf9add3"
 }
+
+### get all categories§
+GET http://localhost:8000/api/v1/category/63bb9943e674d1497cf9add3

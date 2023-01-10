@@ -13,3 +13,17 @@ export const newCategoryValidation = (req, res, next) => {
   // give data to rules
   validator(schema, req, res, next);
 };
+
+export const updateCategoryValidation = (req, res, next) => {
+  req.body.parentCatId = req.body.parentCatId ? req.body.parentCatId : null;
+
+  // define rules
+  const schema = Joi.object({
+    status: STATUS,
+    name: SHORTSTR.required(),
+    parentCatId: SHORTSTR.allow("", null),
+    _id: SHORTSTR.required(),
+  });
+  // give data to rules
+  validator(schema, req, res, next);
+};
