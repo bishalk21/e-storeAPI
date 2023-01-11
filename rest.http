@@ -45,4 +45,32 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtiQGcuY29tIiwi
 
 ### get new accessJWT
 GET http://localhost:8000/api/v1/admin-user/accessjwt
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtiQGcuY29tIiwiaWF0IjoxNjczNDE1NjQ4LCJleHAiOjE2NzYwMDc2NDh9._jZhcL-omHA9F9gsQijRf8EdaKIcDiVLS1WOfMScsyI
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtiQGcuY29tIiwiaWF0IjoxNjczNDEyNzcyLCJleHAiOjE2NzYwMDQ3NzJ9.nu0StOATXFGEo5jySUg-_rI2Acd-vavHmFqgiw-Bm3k
+
+### ============== payment method
+### get all payment methods
+GET http://localhost:8000/api/v1/payment-method 
+
+### post new payment method
+POST http://localhost:8000/api/v1/payment-method
+Content-Type: application/json
+
+{
+    "status": "inactive",
+    "name": "Pay by Paypal",
+    "description": "Payment by Paypal"
+}
+
+### update payment method
+PUT http://localhost:8000/api/v1/payment-method/
+Content-Type: application/json
+
+{
+    "_id": "63be9f9630f7860777714819",
+    "status": "inactive",
+    "name": "Pay by Paypal",
+    "description": "Payment by Paypal"
+}
+
+### delete payment method
+DELETE http://localhost:8000/api/v1/payment-method/63be9f9630f7860777714819
