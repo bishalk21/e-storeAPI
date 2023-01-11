@@ -66,16 +66,17 @@ router.put("/", updateCategoryValidation, async (req, res, next) => {
   try {
     // console.log(req.body);
 
-    const hasChildCats = await hasChildCategory(req.body._id);
+    if (req.body.parentCatId) {
+      const hasChildCats = await hasChildCategory(req.body._id);
 
-    if (hasChildCats) {
-      return res.json({
-        status: "error",
-        message:
-          "Unable to update category, please remove child categories or reassign the child categories to other category before taking any action",
-      });
+      if (hasChildCats) {
+        return res.json({
+          status: "error",
+          message:
+            "Unable to update category, please remove child categories or reassign the child categories to other category before taking any action",
+        });
+      }
     }
-
     const categoryUpdate = await updateCategoryById(req.body);
 
     categoryUpdate?._id
