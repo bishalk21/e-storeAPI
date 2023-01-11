@@ -48,3 +48,7 @@ export const verifyAccessJWT = async (token) => {
     return message;
   }
 };
+
+export const verifyRefreshJWT = async (token) => {
+  return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+};

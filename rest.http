@@ -42,3 +42,7 @@ GET http://localhost:8000/api/v1/category/63bb9943e674d1497cf9add3
 ### ======== protecting server side
 GET http://localhost:8000/api/v1/category
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtiQGcuY29tIiwiaWF0IjoxNjczNDAwMDkyLCJleHAiOjE2NzM0MDA5OTJ9.ISPWjaRJbxqlabumhgx3gLBMcZgqvQJwcQ1joahOo7k
+
+### get new accessJWT
+GET http://localhost:8000/api/v1/admin-user/accessjwt
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtiQGcuY29tIiwiaWF0IjoxNjczNDE1NjQ4LCJleHAiOjE2NzYwMDc2NDh9._jZhcL-omHA9F9gsQijRf8EdaKIcDiVLS1WOfMScsyI
