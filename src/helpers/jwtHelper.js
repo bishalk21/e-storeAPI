@@ -1,32 +1,50 @@
 import jwt from "jsonwebtoken";
 import { updateOneUser } from "../model/admin-user/adminUserModel.js";
-import { insertSession } from "../model/browser-sesion/SessionModel.js";
+import {
+  deleteSession,
+  insertSession,
+} from "../model/browser-sesion/SessionModel.js";
 
-export const signAccessJWT =async (payload) => {
-    const accessJWT =  jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {
-        expiresIn: "15m",
-    })
-    
-    const obj = {
-        token: accessJWT,
-        type: "jwt",
-    }
+export const signAccessJWT = async (payload) => {
+  const accessJWT = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {
+    expiresIn: "15m",
+  });
 
-    await insertSession(obj);
-    return accessJWT;
-}
+  const obj = {
+    token: accessJWT,
+    type: "jwt",
+  };
 
-export const signRefreshJWT =async (payload) => {
-    const refreshJWT =  jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
-        expiresIn: "30d",
-    })
+  await insertSession(obj);
+  return accessJWT;
+};
 
-    await updateOneUser(payload, {refreshJWT})
-    return refreshJWT;
-}
+export const signRefreshJWT = async (payload) => {
+  const refreshJWT = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
+    expiresIn: "30d",
+  });
+
+  await updateOneUser(payload, { refreshJWT });
+  return refreshJWT;
+};
 
 export const createJWTs = async (payload) => {
-    const accessJWT = await signAccessJWT(payload);
-    const refreshJWT = await signRefreshJWT(payload);
-    return {accessJWT, refreshJWT};
-}
+  const accessJWT = await signAccessJWT(payload);
+  const refreshJWT = await signRefreshJWT(payload);
+  return { accessJWT, refreshJWT };
+};
+
+export const verifyAccessJWT = async (token) => {
+  try {
+    return jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+  } catch ({ message }) {
+    if (message === "jwt expired!") {
+      // delete the jwt from session table
+      await deleteSession({
+        type: "jwt",
+        token,
+      });
+    }
+    return message;
+  }
+};

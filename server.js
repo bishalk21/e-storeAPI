@@ -19,10 +19,11 @@ const PORT = process.env.PORT || 8000;
 // ROUTES
 import adminUserRouter from "./src/routers/adminUserRouter.js";
 import categoryRouter from "./src/routers/categoryRouter.js";
+import { authAdmin } from "./src/middlewares/auth-middleware/authMiddleware.js";
 
 // Routes api
 app.use("/api/v1/admin-user", adminUserRouter);
-app.use("/api/v1/category", categoryRouter);
+app.use("/api/v1/category", authAdmin, categoryRouter);
 
 // global ssr
 app.get("/", (req, res) => {
