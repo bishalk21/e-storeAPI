@@ -12,6 +12,8 @@ export const STATUS = Joi.string().max(10);
 export const SHORTSTR = Joi.string().max(50);
 export const LONGSTR = Joi.string().max(100);
 
+export const SMALLNUMBER = Joi.number();
+
 export const validator = (schema, req, res, next) => {
   // give data to the rules
   const { error } = schema.validate(req.body);

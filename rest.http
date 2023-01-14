@@ -74,3 +74,23 @@ Content-Type: application/json
 
 ### delete payment method
 DELETE http://localhost:8000/api/v1/payment-method/63be9f9630f7860777714819
+
+# ============== product api
+### get product
+GET http://localhost:8000/api/v1/product
+
+### post product
+POST http://localhost:8000/api/v1/product
+Content-Type: application/json
+
+{
+    "name": "Mac Book",
+    "sku": "mac-book",
+    "description": "lorem ipsum dolor sit amet",
+    "quantity": 1,
+    "price": 3000,
+    "salesPrice": 1200,
+    "salesStartDate": null,
+    "salesEndDate": null,
+    "parentCatId": "63bbb4adf42c45654ba6b09e"
+}
