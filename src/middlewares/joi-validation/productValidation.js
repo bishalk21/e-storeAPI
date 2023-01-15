@@ -12,6 +12,7 @@ export const newProductValidation = (req, res, next) => {
   // define rules
   const schema = Joi.object({
     name: SHORTSTR.required(),
+    status: STATUS.required(),
     sku: SHORTSTR.required(),
     description: LONGSTR.required(),
     quantity: SMALLNUMBER.required(),

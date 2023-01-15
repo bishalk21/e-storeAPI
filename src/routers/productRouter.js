@@ -40,6 +40,12 @@ router.post("/", newProductValidation, async (req, res, next) => {
         });
   } catch (error) {
     // error.status = 401;
+    // next(error);
+    let message = error.message;
+    if (message.includes("E11000 duplicate key error collection")) {
+      error.message =
+        "There is already another product with the same name. Please change the product name and resubmit again!";
+    }
     next(error);
   }
 });
