@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import path from "path";
 
 // DATABASE
 import connectDb from "./src/config/dbConfig.js";
@@ -15,6 +16,11 @@ app.use(express.json());
 
 // PORT
 const PORT = process.env.PORT || 8000;
+
+// serving static content
+// images
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, "public")));
 
 // ROUTES
 import adminUserRouter from "./src/routers/adminUserRouter.js";

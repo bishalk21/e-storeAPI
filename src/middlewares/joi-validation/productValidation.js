@@ -9,6 +9,14 @@ import {
 } from "./constant.js";
 
 export const newProductValidation = (req, res, next) => {
+  const { salesPrice, salesStartDate, salesEndDate } = req.body;
+
+  req.body.salesPrice = salesPrice ? salesPrice : 0;
+  req.body.salesStartDate =
+    !salesStartDate || salesStartDate === "null" ? null : salesStartDate;
+  req.body.salesEndDate =
+    !salesEndDate || salesEndDate === "null" ? null : salesEndDate;
+
   // define rules
   const schema = Joi.object({
     name: SHORTSTR.required(),

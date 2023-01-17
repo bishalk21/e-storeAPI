@@ -2,8 +2,27 @@ import express from "express";
 import slugify from "slugify";
 import { newProductValidation } from "../middlewares/joi-validation/productValidation.js";
 import { addProducts, getAllProducts } from "../model/product/ProductModel.js";
-
+import multer from "multer";
 const router = express.Router();
+
+// setup multer for validation and upload destination
+const fileUploadDestination = "public/img/products";
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    let error = null;
+    // validation test if needed ....
+    cb(error, fileUploadDestination);
+  },
+  filename: (req, file, cb) => {
+    const fullFilename = Date.now() + "-" + file.originalname;
+
+    cb(null, fullFilename);
+  },
+});
+
+// upload destination
+const upload = multer({ storage });
 
 // get products
 router.get("/", async (req, res, next) => {
@@ -21,33 +40,53 @@ router.get("/", async (req, res, next) => {
 });
 
 // post products
-router.post("/", newProductValidation, async (req, res, next) => {
-  try {
-    // console.log(req.body);
+router.post(
+  "/",
+  upload.array("images", 5),
+  newProductValidation,
+  async (req, res, next) => {
+    try {
+      // console.log(req.body);
 
-    req.body.slug = slugify(req.body.name, { lower: true, trim: true });
+      const files = req.files;
+      // console.log(files);
 
-    const result = await addProducts(req.body);
+      // images
+      if (files.length) {
+        // path images manage
+        const images = files.map((image) => image.path.slice(6));
+        // console.log(images);
 
-    result?._id
-      ? res.json({
-          status: "success",
-          message: "Product created successfully",
-        })
-      : res.json({
-          status: "error",
-          message: "Unable to create product",
-        });
-  } catch (error) {
-    // error.status = 401;
-    // next(error);
-    let message = error.message;
-    if (message.includes("E11000 duplicate key error collection")) {
-      error.message =
-        "There is already another product with the same name. Please change the product name and resubmit again!";
+        req.body.images = images;
+
+        // thumnbnail
+        req.body.thumbnail = images[0];
+      }
+
+      req.body.slug = slugify(req.body.name, { lower: true, trim: true });
+
+      const result = await addProducts(req.body);
+
+      result?._id
+        ? res.json({
+            status: "success",
+            message: "Product created successfully",
+          })
+        : res.json({
+            status: "error",
+            message: "Unable to create product",
+          });
+    } catch (error) {
+      // error.status = 401;
+      // next(error);
+      let message = error.message;
+      if (message.includes("E11000 duplicate key error collection")) {
+        error.message =
+          "There is already another product with the same name. Please change the product name and resubmit again!";
+      }
+      next(error);
     }
-    next(error);
   }
-});
+);
 
 export default router;
