@@ -1,9 +1,15 @@
 import express from "express";
 import slugify from "slugify";
 import { newProductValidation } from "../middlewares/joi-validation/productValidation.js";
-import { addProducts, getAllProducts } from "../model/product/ProductModel.js";
+import {
+  addProducts,
+  deleteProduct,
+  getAllProducts,
+  getSingleProductById,
+} from "../model/product/ProductModel.js";
 import multer from "multer";
 const router = express.Router();
+import fs from "fs";
 
 // setup multer for validation and upload destination
 const fileUploadDestination = "public/img/products";
@@ -25,9 +31,13 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // get products
-router.get("/", async (req, res, next) => {
+router.get("/:_id?", async (req, res, next) => {
   try {
-    const products = await getAllProducts();
+    const { _id } = req.params;
+
+    const products = _id
+      ? await getSingleProductById(_id)
+      : await getAllProducts();
 
     res.json({
       status: "success",
@@ -88,5 +98,34 @@ router.post(
     }
   }
 );
+
+// delete product
+router.delete("/:_id", async (req, res, next) => {
+  try {
+    const { _id } = req.params;
+    const imgToDelete = req.body;
+
+    // deleting item from disk, not reccomended in production
+    if (imgToDelete.length) {
+      // fs.unlinkSync("PATH TO IMAGE")
+      imgToDelete.map((item) => item && fs.unlinkSync("./public/" + item));
+    }
+
+    // delete the product from database based on given _id
+    const product = await deleteProduct(_id);
+
+    product?._id
+      ? res.json({
+          status: "success",
+          message: "Product deleted successfully",
+        })
+      : res.json({
+          status: "error",
+          message: "Product not found",
+        });
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default router;
