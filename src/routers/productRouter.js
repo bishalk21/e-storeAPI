@@ -1,11 +1,15 @@
 import express from "express";
 import slugify from "slugify";
-import { newProductValidation } from "../middlewares/joi-validation/productValidation.js";
+import {
+  newProductValidation,
+  updateProductValidation,
+} from "../middlewares/joi-validation/productValidation.js";
 import {
   addProducts,
   deleteProduct,
   getAllProducts,
   getSingleProductById,
+  updateProductById,
 } from "../model/product/ProductModel.js";
 import multer from "multer";
 const router = express.Router();
@@ -94,6 +98,51 @@ router.post(
         error.message =
           "There is already another product with the same name. Please change the product name and resubmit again!";
       }
+      next(error);
+    }
+  }
+);
+
+// update product
+router.put(
+  "/",
+  upload.array("newImages", 5),
+  updateProductValidation,
+  async (req, res, next) => {
+    try {
+      // console.log(req.body, req.files);
+      const { body, files } = req;
+
+      //recieve new images and image to delete
+      // convert image into array
+      let { images, imgToDelete } = body;
+      images = images.split(",");
+      imgToDelete = imgToDelete.split(",");
+      // console.log(images, "=============");
+      // console.log(imgToDelete);
+
+      images = images.filter((img) => !imgToDelete.includes(img));
+      // console.log(imgAfterFilter);
+
+      if (files) {
+        const newImages = files.map((imgObj) => imgObj.path.slice(6));
+        images = [...images, ...newImages];
+      }
+      body.images = images;
+
+      const product = await updateProductById(body);
+
+      product?._id
+        ? res.json({
+            status: "success",
+            message: "Product updated successfully",
+          })
+        : res.json({
+            status: "error",
+            message: "Unable to update product, please try again later",
+          });
+    } catch (error) {
+      error.status = 500;
       next(error);
     }
   }

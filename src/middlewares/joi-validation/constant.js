@@ -10,7 +10,7 @@ export const DATE = Joi.date().allow("", null);
 export const STATUS = Joi.string().max(10);
 
 export const SHORTSTR = Joi.string().max(50);
-export const LONGSTR = Joi.string().max(100);
+export const LONGSTR = Joi.string().max(10000);
 
 export const SMALLNUMBER = Joi.number();
 

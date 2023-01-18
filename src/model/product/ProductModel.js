@@ -22,7 +22,7 @@ export const getSingleProductById = (_id) => {
 
 // update product by Id
 export const updateProductById = ({ _id, ...rest }) => {
-  return ProductSchema.findByIdAndUpdate({ _id, rest });
+  return ProductSchema.findByIdAndUpdate(_id, rest);
 };
 
 // delete product
