@@ -61,3 +61,15 @@ export const updateAdminUserValidation = (req, res, next) => {
   // give data to the rules
   validator(schema, req, res, next);
 };
+
+// update admin user validation
+export const updateAdminUserPasswordValidation = (req, res, next) => {
+  // define rules
+  const schema = Joi.object({
+    _id: SHORTSTR.required(),
+    password: SHORTSTR.required(),
+    newPassword: SHORTSTR.required(),
+  });
+  // give data to the rules
+  validator(schema, req, res, next);
+};

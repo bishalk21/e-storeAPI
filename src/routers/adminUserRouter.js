@@ -3,6 +3,7 @@ import { comparePassword, hashPassword } from "../helpers/bcryptHelper.js";
 import {
   emailVerificationValidation,
   newAdminUserValidation,
+  updateAdminUserPasswordValidation,
   updateAdminUserValidation,
 } from "../middlewares/joi-validation/AdminUserValidation.js";
 import {
@@ -240,4 +241,57 @@ router.put(
   }
 );
 
+// update admin user password in user profile page
+router.patch(
+  "/",
+  authAdmin,
+  updateAdminUserPasswordValidation,
+  async (req, res, next) => {
+    try {
+      // console.log(req.body);
+      const { password, _id, newPassword } = req.body;
+
+      // user admin info from admin auth
+      // console.log(req.adminInfo);
+      // converting into string
+      const userId = req.adminInfo._id.toString();
+      if (_id !== userId) {
+        return res.status(401).json({
+          status: "error",
+          message: "Invalid user request",
+        });
+      }
+
+      // 1. check if password is valid
+      const passwordFromDB = req.adminInfo.password;
+      const isPasswordMatched = comparePassword(password, passwordFromDB);
+
+      if (isPasswordMatched) {
+        // 2. encrypt the new password
+        const hashedPassword = hashPassword(newPassword);
+
+        // 3. update the password in db
+
+        const result = await updateOneUser(
+          { _id },
+          { password: hashedPassword }
+        );
+
+        if (result?._id) {
+          return res.json({
+            status: "success",
+            message: "Password has been updated successfully",
+          });
+        }
+      }
+
+      res.json({
+        status: "error",
+        message: "Unable to update password, please try again later",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 export default router;
