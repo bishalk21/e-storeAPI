@@ -3,6 +3,7 @@ import { comparePassword, hashPassword } from "../helpers/bcryptHelper.js";
 import {
   emailVerificationValidation,
   newAdminUserValidation,
+  updateAdminUserValidation,
 } from "../middlewares/joi-validation/AdminUserValidation.js";
 import {
   addNewUser,
@@ -26,6 +27,8 @@ const router = express.Router();
 router.get("/", authAdmin, (req, res, next) => {
   try {
     const user = req.adminInfo;
+    user.password = undefined;
+    user.refreshJWT = undefined;
 
     res.json({
       status: "success",
@@ -38,7 +41,7 @@ router.get("/", authAdmin, (req, res, next) => {
 });
 
 // create new user
-router.post("/", newAdminUserValidation, async (req, res, next) => {
+router.post("/", authAdmin, newAdminUserValidation, async (req, res, next) => {
   try {
     // console.log(req.body);
     const { password } = req.body;
@@ -208,5 +211,33 @@ router.get("/accessjwt", async (req, res, next) => {
     next(error);
   }
 });
+
+// updating user profile router
+router.put(
+  "/",
+  authAdmin,
+  updateAdminUserValidation,
+  async (req, res, next) => {
+    try {
+      // console.log(req.body);
+      const { _id, ...rest } = req.body;
+
+      const result = await updateOneUser({ _id }, rest);
+
+      result?._id
+        ? res.json({
+            status: "success",
+            message: "User profile updated successfully",
+          })
+        : res.json({
+            status: "error",
+            message:
+              "An error has occurred while updating the user profile, please try again later",
+          });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default router;
