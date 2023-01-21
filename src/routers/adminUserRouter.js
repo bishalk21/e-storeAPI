@@ -13,6 +13,7 @@ import {
 } from "../model/admin-user/adminUserModel.js";
 import { v4 as uuidv4 } from "uuid";
 import {
+  otpNotification,
   userVerifyNotification,
   verificationEmail,
 } from "../helpers/emailHelper.js";
@@ -22,6 +23,8 @@ import {
   verifyRefreshJWT,
 } from "../helpers/jwtHelper.js";
 import { authAdmin } from "../middlewares/auth-middleware/authMiddleware.js";
+import { createOTP } from "../../randomGenerator.js";
+import { insertSession } from "../model/browser-sesion/SessionModel.js";
 const router = express.Router();
 
 // fetch user
@@ -294,4 +297,51 @@ router.patch(
     }
   }
 );
+
+// password reset as logged out admin
+router.post("/req-password-reset-otp", async (req, res, next) => {
+  try {
+    // console.log(req.body);
+
+    // 1. check if user exist
+    const { email } = req.body;
+
+    if (email.includes("@")) {
+      const user = await findOneUser({ email });
+
+      if (user?._id) {
+        // 2. create unique code and
+        // const otp = createOTP();
+
+        // 3. store otp in db with email
+        const obj = {
+          token: createOTP(),
+          associate: email,
+          type: "updatePassword",
+        };
+
+        const result = await insertSession(obj);
+        // console.log(result);
+
+        if (result?._id) {
+          // 3. email unique link for the frontend that takes user to password update page
+          otpNotification({
+            otp: result.token,
+            fName: result.associate,
+            email,
+          });
+        }
+      }
+    }
+
+    res.json({
+      status: "success",
+      message:
+        "If the email exist in our system, we will send you OTP and password reset link in your email",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;

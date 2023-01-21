@@ -22,7 +22,15 @@ Content-Type: application/json
 
 {
     "email": "kb@g.com",
-    "password": "asdfg"
+    "password": "Asdfgh1"
+}
+
+### request otp for password reset
+POST http://localhost:8000/api/v1/admin-user/req-password-reset-otp
+Content-Type: application/json
+
+{
+    "email": "kb@g.com"
 }
 
 # =============== category api
