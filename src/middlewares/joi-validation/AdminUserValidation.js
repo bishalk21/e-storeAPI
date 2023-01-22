@@ -9,6 +9,7 @@ import {
   PASSWORD,
   PHONE,
   SHORTSTR,
+  SMALLNUMBER,
   validator,
 } from "./constant.js";
 
@@ -62,13 +63,25 @@ export const updateAdminUserValidation = (req, res, next) => {
   validator(schema, req, res, next);
 };
 
-// update admin user validation
+// update admin user validation req otp
 export const updateAdminUserPasswordValidation = (req, res, next) => {
   // define rules
   const schema = Joi.object({
     _id: SHORTSTR.required(),
     password: SHORTSTR.required(),
     newPassword: SHORTSTR.required(),
+  });
+  // give data to the rules
+  validator(schema, req, res, next);
+};
+
+// reset admin user password validation after req otp
+export const resetAdminUserPasswordValidation = (req, res, next) => {
+  // define rules
+  const schema = Joi.object({
+    email: EMAIL.required(),
+    password: SHORTSTR.required(),
+    otp: SMALLNUMBER.required(),
   });
   // give data to the rules
   validator(schema, req, res, next);

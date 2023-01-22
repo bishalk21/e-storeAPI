@@ -3,6 +3,7 @@ import { comparePassword, hashPassword } from "../helpers/bcryptHelper.js";
 import {
   emailVerificationValidation,
   newAdminUserValidation,
+  resetAdminUserPasswordValidation,
   updateAdminUserPasswordValidation,
   updateAdminUserValidation,
 } from "../middlewares/joi-validation/AdminUserValidation.js";
@@ -24,7 +25,10 @@ import {
 } from "../helpers/jwtHelper.js";
 import { authAdmin } from "../middlewares/auth-middleware/authMiddleware.js";
 import { createOTP } from "../../randomGenerator.js";
-import { insertSession } from "../model/browser-sesion/SessionModel.js";
+import {
+  deleteSession,
+  insertSession,
+} from "../model/browser-sesion/SessionModel.js";
 const router = express.Router();
 
 // fetch user
@@ -298,7 +302,7 @@ router.patch(
   }
 );
 
-// password reset as logged out admin
+// request otp password reset as logged out admin
 router.post("/req-password-reset-otp", async (req, res, next) => {
   try {
     // console.log(req.body);
@@ -343,5 +347,52 @@ router.post("/req-password-reset-otp", async (req, res, next) => {
     next(error);
   }
 });
+
+// reset password
+router.patch(
+  "/reset-password",
+  resetAdminUserPasswordValidation,
+  async (req, res, next) => {
+    try {
+      // console.log(req.body);
+
+      const { email, otp, password } = req.body;
+
+      const filter = {
+        token: otp,
+        associate: email,
+        type: "updatePassword",
+      };
+
+      // 1. find if filter exist in the session table and delete it
+      const result = await deleteSession(filter);
+
+      // 2. if delete success,
+      if (result?._id) {
+        // 3. encrypt the password and
+        const encryptPassword = hashPassword(password);
+
+        // 4. update in the user table by email
+        const user = await updateOneUser(
+          { email },
+          { password: encryptPassword }
+        );
+
+        if (user?._id) {
+          return res.json({
+            status: "success",
+            message: "Your password has been updated successfully",
+          });
+        }
+      }
+      res.json({
+        status: "success",
+        message: "Hello There",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default router;
