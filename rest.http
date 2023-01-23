@@ -102,3 +102,7 @@ Content-Type: application/json
     "salesEndDate": null,
     "parentCatId": "63bbb4adf42c45654ba6b09e"
 }
+
+# =============== Order API
+### get all orders
+GET http://localhost:8000/api/v1/order/11

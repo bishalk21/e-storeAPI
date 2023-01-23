@@ -28,12 +28,14 @@ import categoryRouter from "./src/routers/categoryRouter.js";
 import { authAdmin } from "./src/middlewares/auth-middleware/authMiddleware.js";
 import paymentMethodRouter from "./src/routers/paymentMethodRouter.js";
 import productRouter from "./src/routers/productRouter.js";
+import orderRouter from "./src/routers/orderRouter.js";
 
 // Routes api
 app.use("/api/v1/admin-user", adminUserRouter);
 app.use("/api/v1/category", authAdmin, categoryRouter);
 app.use("/api/v1/payment-method", authAdmin, paymentMethodRouter);
 app.use("/api/v1/product", productRouter);
+app.use("/api/v1/order", orderRouter);
 
 // global ssr
 app.get("/", (req, res) => {

@@ -24,11 +24,12 @@ import {
   verifyRefreshJWT,
 } from "../helpers/jwtHelper.js";
 import { authAdmin } from "../middlewares/auth-middleware/authMiddleware.js";
-import { createOTP } from "../../randomGenerator.js";
+
 import {
   deleteSession,
   insertSession,
 } from "../model/browser-sesion/SessionModel.js";
+import { createOTP } from "../utils/randomGenerator.js";
 const router = express.Router();
 
 // fetch user
@@ -386,8 +387,8 @@ router.patch(
         }
       }
       res.json({
-        status: "success",
-        message: "Hello There",
+        status: "error",
+        message: "Invalid request",
       });
     } catch (error) {
       next(error);
