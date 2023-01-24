@@ -142,7 +142,9 @@ router.get("/:_id?", (req, res, next) => {
   try {
     const { _id } = req.params;
 
-    const orders = _id ? orderArg.filter((item) => item._id === _id) : orderArg;
+    const orders = _id
+      ? orderArg.filter((item) => item._id === _id)[0]
+      : orderArg;
 
     res.json({
       status: "success",
