@@ -29,13 +29,17 @@ import { authAdmin } from "./src/middlewares/auth-middleware/authMiddleware.js";
 import paymentMethodRouter from "./src/routers/paymentMethodRouter.js";
 import productRouter from "./src/routers/productRouter.js";
 import orderRouter from "./src/routers/orderRouter.js";
+import reviewRouter from "./src/routers/reviewRouter.js";
+import userRouter from "./src/routers/userRouter.js";
 
 // Routes api
 app.use("/api/v1/admin-user", adminUserRouter);
 app.use("/api/v1/category", authAdmin, categoryRouter);
 app.use("/api/v1/payment-method", authAdmin, paymentMethodRouter);
-app.use("/api/v1/product", productRouter);
-app.use("/api/v1/order", orderRouter);
+app.use("/api/v1/product", authAdmin, productRouter);
+app.use("/api/v1/order", authAdmin, orderRouter);
+app.use("/api/v1/reviews", authAdmin, reviewRouter);
+app.use("/api/v1/users", authAdmin, userRouter);
 
 // global ssr
 app.get("/", (req, res) => {
