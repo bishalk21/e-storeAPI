@@ -9,6 +9,8 @@ import {
 } from "../middlewares/joi-validation/AdminUserValidation.js";
 import {
   addNewUser,
+  deleteAdminUser,
+  findAllAdminUser,
   findOneUser,
   updateOneUser,
 } from "../model/admin-user/adminUserModel.js";
@@ -43,6 +45,24 @@ router.get("/", authAdmin, (req, res, next) => {
       status: "success",
       message: "User fetched",
       user,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// fetch all admin user
+router.get("/all-admin", authAdmin, async (req, res, next) => {
+  try {
+    // const user = req.adminInfo;
+    const users = await findAllAdminUser();
+    // user.password = undefined;
+    // user.refreshJWT = undefined;
+
+    res.json({
+      status: "success",
+      message: "User fetched",
+      users,
     });
   } catch (error) {
     next(error);
@@ -395,5 +415,35 @@ router.patch(
     }
   }
 );
+
+router.delete("/:_id", async (req, res, next) => {
+  try {
+    const { _id } = req.params;
+
+    const isUser = await findOneUser();
+    // check if this is the last user in the db, if so no delete
+    if (isUser.length <= 1) {
+      return res.json({
+        status: "error",
+        message: "Unable to delete the user",
+      });
+    }
+    // if not delete the user from the db
+    const deleteUser = await deleteAdminUser(_id);
+    if (deleteUser?._id) {
+      return res.json({
+        status: "success",
+        message: "User deleted successfully",
+      });
+    }
+
+    res.json({
+      status: "error",
+      message: "Error deleting user from the database +",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default router;
